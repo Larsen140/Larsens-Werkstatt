@@ -2,6 +2,17 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 4.6 – 12. November 2026
+
+**Schärfere Bilder in allen Formaten**
+- Beim Speichern wird das Auto bis zu doppelt so groß berechnet und dann sauber verkleinert: glattere Kanten, mehr Details
+- Neuer Regler „Schärfe“ unter Effekte (Standard 35 %)
+- Feinere Schatten im gespeicherten Bild (am PC)
+- Weniger Kompression beim Speichern
+- Schärfere Texturen: Kennzeichen doppelt so fein, Boden und Wände bleiben auch schräg betrachtet scharf
+- Größere Formate: Profilbild 2048 × 2048 (vorher 1080), Banner 3000 × 1000 (vorher 1500 × 500), neu PC WQHD 2560 × 1440
+- Das Filmkorn passt sich der Bildgröße an
+
 ## Version 4.5 – 12. November 2026
 
 **Unterbodenbeleuchtung**
