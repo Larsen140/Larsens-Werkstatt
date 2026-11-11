@@ -2,6 +2,13 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 3.1 – 11. November 2026
+
+- Die App lässt sich zum Homescreen hinzufügen und startet dann im Vollbild
+- Auf Handy und Tablet ist das Hinzufügen Pflicht: Im Browser erscheint eine Anleitung, erst vom Homescreen aus öffnet sich die Werkstatt
+- Eigenes App-Symbol
+- Läuft nach dem ersten Öffnen auch ohne Internet
+
 ## Version 3 – 11. November 2026
 
 **Bild erstellen**

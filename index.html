@@ -3,6 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b0e13">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Werkstatt">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <style>html{color-scheme:dark}:root{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);box-sizing:border-box}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>Larsens Autowerkstatt</title>
@@ -83,6 +91,13 @@ button{cursor:pointer}
 #shotForm{width:300px;flex:none;display:flex;flex-direction:column;gap:14px}
 #shotForm h2{margin:0;font:800 24px/1 var(--display);letter-spacing:.04em;text-transform:uppercase}
 #shotMsg{min-height:1.4em;color:var(--ice);font-size:13px;margin:0}
+#install{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:max(20px,env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) max(20px,env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));overflow:auto}
+#install>div{max-width:420px;display:flex;flex-direction:column;gap:14px}
+#install span{font:700 13px/1 var(--display);letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+#install h2{margin:0;font:800 34px/1.05 var(--display);letter-spacing:.03em;text-transform:uppercase;text-wrap:balance}
+#install p{margin:0;color:#c9d1db;font-size:15px}
+#install ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px;font-size:15px}
+#install ol b{color:var(--accent)}
 .row{display:flex;gap:8px}
 .row>*{flex:1}
 @media (max-width:820px){
@@ -131,6 +146,16 @@ button{cursor:pointer}
   </aside>
 </div>
 
+<div id="install" hidden>
+  <div role="dialog" aria-modal="true" aria-labelledby="instH">
+    <span>Larsens Autowerkstatt</span>
+    <h2 id="instH">Erst zum Homescreen hinzufügen</h2>
+    <p id="instP">Die Werkstatt läuft als App im Vollbild. Füge sie einmal zu deinem Homescreen hinzu und öffne sie dann von dort.</p>
+    <ol id="instSteps"></ol>
+    <button class="hb go" id="instBtn" hidden style="font-size:17px;padding:13px">Jetzt installieren</button>
+  </div>
+</div>
+
 <div id="shot" hidden>
   <div id="shotBox" role="dialog" aria-modal="true" aria-labelledby="shotH">
     <div id="shotPrev"><img id="shotImg" alt="Vorschau deines Hintergrundbilds"></div>
@@ -159,6 +184,21 @@ button{cursor:pointer}
 'use strict';
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[n,v]of Object.entries(a)){if(n==='class')e.className=v;else if(n==='text')e.textContent=v;else if(n==='html')e.innerHTML=v;else if(n.startsWith('on'))e.addEventListener(n.slice(2),v);else e.setAttribute(n,v)}k.forEach(c=>c&&e.append(c));return e};
+/* Homescreen-Pflicht: nur in der GitHub-Version (dort gibt es ein Manifest), nur auf Handy und Tablet */
+(function(){
+ if(!document.querySelector('link[rel="manifest"]'))return;
+ if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+ const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),and=/Android/.test(ua);
+ const alone=matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches||navigator.standalone===true;
+ if(alone||!(ios||and))return;
+ const box=$('#install'),ol=$('#instSteps'),btn=$('#instBtn'),steps=ios?['Tippe unten in der Leiste auf <b>Teilen</b> (Quadrat mit Pfeil nach oben).','Scrolle und wähle <b>Zum Home-Bildschirm</b>.','Tippe auf <b>Hinzufügen</b>.','Öffne <b>Werkstatt</b> von deinem Homescreen.']
+  :['Tippe oben rechts auf das <b>Menü</b> (drei Punkte).','Wähle <b>App installieren</b> oder <b>Zum Startbildschirm hinzufügen</b>.','Bestätige mit <b>Installieren</b>.','Öffne <b>Werkstatt</b> von deinem Homescreen.'];
+ for(const t of steps)ol.append(el('li',{html:t}));box.hidden=false;
+ let ev=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();ev=e;btn.hidden=false});
+ btn.onclick=async()=>{if(!ev)return;ev.prompt();try{await ev.userChoice}catch(e){}ev=null;btn.hidden=true};
+ window.addEventListener('appinstalled',()=>{$('#instH').textContent='Installiert';$('#instP').textContent='Öffne die Werkstatt jetzt von deinem Homescreen.';ol.hidden=true;btn.hidden=true});
+ matchMedia('(display-mode: standalone)').addEventListener('change',e=>{if(e.matches)box.hidden=true});
+})();
 const col=h=>new THREE.Color(h).convertSRGBToLinear();
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
@@ -223,6 +263,7 @@ const SCENES={
 const FMT={pfp:{n:'Profilbild',w:1080,h:1080},banner:{n:'Banner',w:1500,h:500},iphone:{n:'iPhone',w:1290,h:2796},handy:{n:'Android-Handy',w:1440,h:3200},ipad:{n:'iPad / Tablet',w:2048,h:2732},pc:{n:'PC Full HD',w:1920,h:1080},pc4k:{n:'PC 4K',w:3840,h:2160}};
 
 const UPDATES=[
+ ['Version 3.1','Die GitHub-Version ist jetzt eine richtige App: Auf Handy und Tablet fügst du sie zum Homescreen hinzu, sie startet im Vollbild und läuft danach auch ohne Internet.'],
  ['Version 3','Bild erstellen: Profilbild, Banner und 7 Hintergründe, 6 Blickwinkel, Werkstatt-Logo. 4 neue Karosserien, Rennstrecke, Garage zum Speichern, Nitro, Warnblinker, Breitbau-Kit, Dachbox, LED-Leiste, Startnummer, Farbwechsel-Lack, Kamerafahrten, Turbopfeifen, Drehzahlbegrenzer und Werkstatt-Geräusche.'],
  ['Version 2','Rundere Karosserien mit Kotflügeln, Türfugen, Griffen und Kühlergrill. Werkstatthalle mit Hebebühne.'],
  ['Version 1','3D-Konfigurator mit Lack, Felgen, Reifen, Tuning, Motor-Sound, Innenraum, Effekten und Hintergrundbild.']

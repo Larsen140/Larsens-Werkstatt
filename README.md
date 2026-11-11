@@ -13,6 +13,15 @@ Ein 3D-Auto-Konfigurator im Browser. Bau dir dein eigenes Auto, stell es in die 
 2. Bei **Source** „Deploy from a branch“ wählen, Branch **main**, Ordner **/ (root)**.
 3. Speichern. Nach ein bis zwei Minuten ist die App unter dem Link oben erreichbar.
 
+## Zum Homescreen hinzufügen
+
+Auf Handy und Tablet muss die App einmal zum Homescreen hinzugefügt werden. Beim ersten Öffnen im Browser zeigt sie die Anleitung an:
+
+- **iPhone und iPad:** Teilen-Symbol → „Zum Home-Bildschirm“ → „Hinzufügen“
+- **Android:** „Jetzt installieren“ antippen oder Menü (drei Punkte) → „App installieren“
+
+Danach startet sie vom Homescreen im Vollbild und läuft auch ohne Internet. Am PC öffnet sie sich direkt im Browser.
+
 ## Was die App kann
 
 - **14 Karosserien:** vom Sportcoupé über SUV, Pickup und Van bis zum Stadtflitzer
@@ -29,5 +38,6 @@ Ein 3D-Auto-Konfigurator im Browser. Bau dir dein eigenes Auto, stell es in die 
 
 - `index.html` – die komplette App in einer Datei
 - `UPDATES.md` – Liste aller Updates
+- `manifest.webmanifest`, `sw.js` und die Symbole – machen die Seite zur installierbaren App
 
 Die Karosserien sind eigene, markenfreie Formen und keine Nachbauten echter Automodelle.
