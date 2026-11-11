@@ -228,7 +228,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[n,v]of Object.entries(a)){if(n==='class')e.className=v;else if(n==='text')e.textContent=v;else if(n==='html')e.innerHTML=v;else if(n.startsWith('on'))e.addEventListener(n.slice(2),v);else e.setAttribute(n,v)}k.forEach(c=>c&&e.append(c));return e};
 /* Homescreen-Pflicht: nur in der GitHub-Version (dort gibt es ein Manifest), nur auf Handy und Tablet */
-const VERSION='4.2';
+const VERSION='4.3';
 {const bv=document.getElementById('bootV');if(bv)bv.textContent='Version '+VERSION}
 (function(){const de=document.documentElement;if(!de.classList.contains('pwa'))return;
  const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),alone=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
@@ -288,6 +288,65 @@ const TYPES=[
  {n:'Stadtflitzer',d:'Winzig und wendig',L:2.95,W:1.6,R:.28,gc:.15,fa:.2,ra:.84,kg:900,cda:.6,sh:.3,seats:2,pil:[.62],
   belt:[[0,.6],[.05,.76],[.16,.9],[.24,.96],[.92,1],[.98,.96],[1,.82]],cab:[[0,0],[.16,0],[.36,.5],[.6,.54],[.9,.5],[.985,0],[1,0]]}
 ];
+const CATS=[['sport','Sportwagen'],['super','Supersportler'],['muscle','Muscle Cars'],['klassik','Klassiker'],['limo','Limousinen'],['kombi','Kombis'],['kompakt','Kompakt & Stadt'],['suv','SUV'],['gelaende','Geländewagen'],['pickup','Pickups'],['van','Vans & Transporter'],['elektro','Elektro-Studien']];
+['sport','super','limo','kombi','suv','gelaende','pickup','kompakt','van','muscle','sport','kombi','suv','kompakt'].forEach((c,i)=>{TYPES[i].cat=c});
+/* Weitere Modelle: Abwandlungen der Grundformen (dy hebt oder senkt die Gürtellinie, cs streckt die Kabine) */
+function mod(b,o){const t=JSON.parse(JSON.stringify(TYPES[b])),dy=o.dy||0,cs=o.cs||1;t.belt=t.belt.map(([x,y])=>[x,+(y+dy).toFixed(3)]);t.cab=t.cab.map(([x,c])=>[x,+(c*cs).toFixed(3)]);delete o.dy;delete o.cs;TYPES.push(Object.assign(t,o));return TYPES.length-1}
+mod(0,{cat:'sport',n:'Leichtbau-Coupé',d:'Klein, leicht, direkt',L:4.05,W:1.76,R:.32,kg:1100,cda:.56,cs:.95});
+mod(0,{cat:'sport',n:'Fastback-Coupé',d:'Langes, flaches Heck',L:4.55,cab:[[0,0],[.3,0],[.44,.36],[.56,.4],[.74,.28],[.93,0],[1,0]]});
+mod(0,{cat:'sport',n:'2+2-Coupé',d:'Sportlich mit Rücksitzen',L:4.7,W:1.9,R:.35,cs:1.04,kg:1650,seats:4});
+mod(0,{cat:'sport',n:'Kompakt-Sportler',d:'Kurz und knackig',L:4.25,W:1.8,R:.33,dy:.01,kg:1350});
+mod(10,{cat:'sport',n:'Langstrecken-GT',d:'Groß, stark, bequem',L:4.95,W:1.96,R:.36,kg:1900});
+mod(0,{cat:'sport',n:'Clubsport',d:'Tief und breit für die Strecke',gc:.09,cs:.93,W:1.9,fl:.055,kg:1300});
+mod(1,{cat:'super',n:'Hypersportler',d:'Länger, breiter, flacher',L:4.75,W:2.04,R:.36,gc:.09,cs:.94,fl:.065,kg:1400,cda:.58});
+mod(1,{cat:'super',n:'Mittelmotor-Sportler',d:'Kompakt mit Motor hinten',L:4.4,W:1.92,R:.34,cs:1.03,kg:1380});
+mod(1,{cat:'super',n:'Flunder',d:'Kaum höher als ein Tisch',L:4.55,W:2.02,cs:.88,gc:.09,kg:1300});
+mod(1,{cat:'super',n:'Langheck-Renner',d:'Gestrecktes Heck für Tempo',L:4.85,cab:[[0,0],[.22,0],[.4,.3],[.5,.32],[.7,.2],[.93,0],[1,0]]});
+mod(9,{cat:'muscle',n:'Fastback-Muscle',d:'Dach läuft bis zum Heck',cab:[[0,0],[.36,0],[.47,.38],[.58,.42],[.76,.3],[.94,0],[1,0]]});
+mod(9,{cat:'muscle',n:'Pony Car',d:'Etwas kleiner, genauso laut',L:4.6,W:1.88,R:.35,kg:1600});
+mod(9,{cat:'muscle',n:'Dragster-Coupé',d:'Dicke Räder, breite Backen',R:.38,W:1.96,fl:.06,dy:.03,kg:1700});
+{const k=TYPES.push({cat:'klassik',n:'Klassik-Limousine',d:'Runde Formen der 50er',L:4.6,W:1.75,R:.34,gc:.18,fa:.17,ra:.8,kg:1400,cda:.8,sh:.3,seats:5,pil:[.52,.66],th:.3,
+  belt:[[0,.62],[.05,.8],[.25,.92],[.32,.96],[.7,.98],[.9,.9],[1,.72]],cab:[[0,0],[.3,0],[.4,.42],[.52,.48],[.66,.44],[.8,0],[1,0]]})-1;
+ mod(k,{n:'Klassik-Coupé',d:'Zwei Türen, kurzes Dach',seats:2,pil:[.56],cab:[[0,0],[.34,0],[.44,.4],[.54,.44],[.64,.4],[.78,0],[1,0]]});
+ mod(k,{n:'Klassik-Kombi',d:'Viel Platz von früher',pil:[.52,.7],cab:[[0,0],[.3,0],[.4,.42],[.55,.48],[.9,.44],[.975,0],[1,0]]});
+ TYPES.push({cat:'klassik',n:'Stromlinien-Limousine',d:'Abfallendes Heck der 40er',L:4.3,W:1.7,R:.33,gc:.17,fa:.18,ra:.8,kg:1100,cda:.7,sh:.28,seats:4,pil:[.54],th:.35,
+  belt:[[0,.55],[.06,.74],[.2,.86],[.3,.9],[.75,.9],[.92,.78],[1,.6]],cab:[[0,0],[.26,0],[.4,.44],[.52,.5],[.7,.4],[.93,0],[1,0]]})}
+mod(2,{cat:'limo',n:'Oberklasse-Limousine',d:'Lang und komfortabel',L:5.25,W:1.95,R:.36,dy:.02,kg:2100,cda:.64});
+mod(2,{cat:'limo',n:'Kompakt-Limousine',d:'Handlich mit Stufenheck',L:4.5,W:1.8,R:.32,dy:-.02,kg:1450,cda:.6});
+mod(2,{cat:'limo',n:'Sportlimousine',d:'Flacher, breiter, schneller',L:4.85,W:1.9,R:.35,gc:.12,cs:.9,dy:-.03,fl:.04,kg:1750,cda:.6});
+mod(2,{cat:'limo',n:'Coupé-Limousine',d:'Vier Türen, fließendes Dach',L:4.95,pil:[.55,.69],cab:[[0,0],[.27,0],[.4,.42],[.55,.46],[.72,.36],[.9,0],[1,0]]});
+mod(2,{cat:'limo',n:'Stretch-Limousine',d:'Extralang für den großen Auftritt',L:6.2,W:1.92,pil:[.47,.6,.72],kg:2600,cda:.68});
+mod(3,{cat:'kombi',n:'Kompakt-Kombi',d:'Kürzer, trotzdem viel Platz',L:4.55,W:1.8,R:.32,dy:-.02,kg:1500});
+mod(3,{cat:'kombi',n:'Gelände-Kombi',d:'Höhergelegt mit Schutzleisten',gc:.22,R:.37,dy:.07,fl:.04,kg:1950,cda:.72});
+mod(3,{cat:'kombi',n:'Sportkombi',d:'Tief und schnell mit Kofferraum',gc:.12,dy:-.03,cs:.92,fl:.04,kg:1800});
+mod(3,{cat:'kombi',n:'Großraum-Kombi',d:'Der Längste mit hohem Dach',L:5.1,cs:1.06,kg:1950});
+mod(7,{cat:'kompakt',n:'Kompaktwagen',d:'Der Allrounder',L:4.3,W:1.8,R:.33,kg:1350,cda:.62});
+mod(7,{cat:'kompakt',n:'Hot Hatch',d:'Kompakt, tief, giftig',L:4.1,W:1.82,R:.33,gc:.11,dy:-.04,cs:.93,fl:.045,kg:1300,cda:.62});
+mod(13,{cat:'kompakt',n:'Hochdach-Mini',d:'Winzig, aber hoch',L:3.4,W:1.62,R:.29,cs:1.12,kg:1000,cda:.68});
+mod(7,{cat:'kompakt',n:'Rallye-Kompakter',d:'Höher, breiter, für Schotter',gc:.2,R:.33,dy:.04,fl:.045,W:1.8,kg:1250});
+mod(7,{cat:'kompakt',n:'Dreitürer',d:'Kurz mit großen Türen',L:3.7,pil:[.6],seats:4,kg:1100});
+mod(4,{cat:'suv',n:'Kompakt-SUV',d:'Hoch sitzen im kleinen Format',L:4.35,W:1.84,R:.36,gc:.2,dy:-.05,cs:.95,kg:1650,cda:.8});
+mod(4,{cat:'suv',n:'Großer SUV',d:'Viel Blech, viel Platz',L:5.15,W:2.02,R:.42,gc:.24,dy:.04,kg:2500,cda:.98});
+mod(12,{cat:'suv',n:'Sport-SUV',d:'Tiefer, breiter, stärker',gc:.17,cs:.94,fl:.055,W:2,R:.41,kg:2200});
+mod(4,{cat:'suv',n:'Stadt-Crossover',d:'Etwas höher als ein Kompakter',L:4.2,W:1.8,R:.35,gc:.18,dy:-.1,cs:.9,kg:1450,cda:.74});
+mod(4,{cat:'suv',n:'Siebensitzer-SUV',d:'Lang mit hohem Dach',L:5.05,cs:1.04,kg:2350,cda:.94});
+mod(5,{cat:'gelaende',n:'Kurzer Geländewagen',d:'Zwei Türen, kurzer Radstand',L:4,W:1.85,R:.4,pil:[.55],seats:2,kg:1900,cda:1.05});
+mod(5,{cat:'gelaende',n:'Expeditions-Geländewagen',d:'Lang und hochbeinig',L:4.95,gc:.3,R:.44,dy:.05,kg:2600,cda:1.2});
+mod(5,{cat:'gelaende',n:'Monster-Geländewagen',d:'Riesenräder, alles höher',gc:.42,R:.52,dy:.2,W:2.05,fl:.07,kg:2800,cda:1.4});
+mod(5,{cat:'gelaende',n:'Leichter Offroader',d:'Klein und kletterfreudig',L:3.8,W:1.7,R:.37,gc:.24,dy:-.08,cs:.95,pil:[.55],seats:2,kg:1300,cda:.95});
+mod(6,{cat:'pickup',n:'Einzelkabinen-Pickup',d:'Kurze Kabine, lange Ladefläche',L:5.3,pil:[.42],cab:[[0,0],[.24,0],[.32,.58],[.4,.62],[.47,.58],[.5,0],[1,0]]});
+mod(6,{cat:'pickup',n:'Offroad-Pickup',d:'Höhergelegt mit großen Rädern',gc:.34,R:.46,dy:.1,fl:.05,kg:2700,cda:1.2});
+mod(6,{cat:'pickup',n:'Sport-Pickup',d:'Tief und straßentauglich',gc:.16,R:.38,dy:-.12,cs:.95,fl:.05,kg:2000,cda:.95});
+mod(6,{cat:'pickup',n:'Kompakt-Pickup',d:'Eine Nummer kleiner',L:4.8,W:1.85,R:.38,gc:.22,dy:-.08,kg:1700,cda:.98});
+mod(8,{cat:'van',n:'Kleinbus',d:'Länger, für noch mehr Leute',L:5.5,W:2,R:.37,cs:1.04,kg:2500,cda:1.1});
+mod(8,{cat:'van',n:'Kastenwagen',d:'Hinten zu, viel Laderaum',L:5.3,panel:true,kg:2100});
+mod(8,{cat:'van',n:'Hochdach-Transporter',d:'Stehhöhe im Laderaum',L:5.6,cs:1.15,panel:true,kg:2400,cda:1.2});
+mod(8,{cat:'van',n:'Camper',d:'Hohes Dach für die Reise',L:5.2,cs:1.1,kg:2600,cda:1.15});
+mod(8,{cat:'van',n:'Familien-Van',d:'Flacher und kürzer',L:4.7,W:1.9,R:.34,cs:.86,dy:-.08,kg:1800,cda:.85});
+mod(2,{cat:'elektro',n:'Aero-Limousine',d:'Glatt wie ein Kiesel',gc:.13,pil:[.55,.7],kg:1900,cda:.5,cab:[[0,0],[.22,0],[.4,.44],[.55,.47],[.75,.38],[.93,0],[1,0]]});
+mod(12,{cat:'elektro',n:'E-Crossover',d:'Hoch, aber windschnittig',L:4.6,cs:.96,kg:2100,cda:.7});
+mod(13,{cat:'elektro',n:'E-Stadtwagen',d:'Kurz, leise, wendig',L:3.2,W:1.62,kg:950,cda:.58});
+mod(1,{cat:'elektro',n:'E-Sportler',d:'Flach mit viel Schub',L:4.5,W:1.96,kg:1700,cda:.55});
 const ENG=[
  {id:'r3',n:'1.0 Dreizylinder',cyl:3,ps:110,idle:950,max:6500},
  {id:'r4',n:'2.0 Vierzylinder Turbo',cyl:4,ps:245,turbo:1,idle:850,max:7000},
@@ -317,6 +376,7 @@ const SCENES={
 const FMT={pfp:{n:'Profilbild',w:1080,h:1080},banner:{n:'Banner',w:1500,h:500},story:{n:'Story',w:1080,h:1920},iphone:{n:'iPhone',w:1290,h:2796},handy:{n:'Android-Handy',w:1440,h:3200},ipad:{n:'iPad / Tablet',w:2048,h:2732},pc:{n:'PC Full HD',w:1920,h:1080},pc4k:{n:'PC 4K',w:3840,h:2160}};
 
 const UPDATES=[
+ ['Version 4.3','12 Kategorien mit insgesamt '+TYPES.length+' Modellen, darunter neue Klassiker, Muscle Cars, Geländewagen, Pickups, Vans und Elektro-Studien. Fotostudio repariert: Die Vorschau wird klein berechnet und das Bild erst beim Speichern in voller Größe, das entlastet das Handy und verhindert Hänger.'],
  ['Version 4.2','Innenraum: Dein Blick bleibt, wohin du schaust, wenn du etwas änderst. Vorher drehte sich der Kopf bei jeder Änderung zurück nach vorn.'],
  ['Version 4.1','Kennzeichen sitzt jetzt sichtbar vor Stoßfänger und Kühlergrill, mit Halter; der Editor steht ganz oben bei „Tuning“ und die Kamera schwenkt beim Bearbeiten nach vorn. Warnblinker neu: kleine Blinker in den Leuchten und an den Spiegeln statt großer Lichtflecken.'],
  ['Version 4.0','Kennzeichen-Editor mit Vorschau: Text, Kürzel, 5 Stile, Schrift, eigene Farben, vorne/hinten. Neue Effekte: Funken beim Schrauben, Lacknebel und weicher Farbübergang beim Lackieren, Abgaswölkchen im Leerlauf und beim Start, blaues Flimmern bei Nitro. Bedienung mit Animationen, neuen Reglern und kurzen Hinweisen; glänzenderer Werkstattboden.'],
@@ -578,7 +638,7 @@ function bodyGeo(){
  const inR=(t,a)=>t>a[0]&&t<a[1];
  const cls=(tm,k,c,m)=>{if(k<=1)return 2;if(c)return 0;
   if(k<=5){if(m>=10&&m<=14&&tm>.012&&tm<.07)return 5;if(m>=12&&m<=14&&tm>.945&&tm<.99)return 6;return 0}
-  if(k===6){if(!inR(tm,P.sg))return 0;return T.pil.some(p=>Math.abs(tm-p)<.009)?4:1}
+  if(k===6){if(!inR(tm,P.sg))return 0;if(T.panel&&tm>T.pil[0]+.009)return 0;return T.pil.some(p=>Math.abs(tm-p)<.009)?4:1}
   if(inR(tm,P.ws)||inR(tm,P.rw))return 1;if(tm>=P.ws[1]&&tm<=P.rw[0])return 3;return 0};
  const n=rings.length;
  for(let i=0;i<n-1;i++){const tm=(rings[i].t+rings[i+1].t)/2,c=rings[i].cap||rings[i+1].cap;
@@ -645,7 +705,7 @@ function buildExtras(g){
  if(S.num.trim()){const t=(P.sg[0]+T.pil[0])/2;for(const q of[-1,1]){const pn=mk(new THREE.PlaneGeometry(.52,.52),M.num,X(t),(belt(t)+yU(t))/2+.03,q*(P.hs(t)+.012),g);if(q<0)pn.rotation.y=Math.PI}}
  const drs=[P.sg[0]+.004,...T.pil.filter(p=>p>P.sg[0]+.05&&p<P.sg[1]-.01)].slice(0,T.seats>=4?3:2);
  drs.forEach((t,i)=>{seam(g,t);if(i){const th=t-.045;for(const q of[-1,1])mk(rbox(.14,.024,.022,.009),M.chrome,X(th),belt(th)-.085,q*(P.hs(th)*.995+.008),g)}});
- for(const ta of[T.fa,T.ra])for(const q of[-1,1]){const lip=mk(new THREE.TorusGeometry(P.Ra+.004,.021,8,30,Math.PI),T.gc>=.22?M.trim:'paint',X(ta),T.R,q*(P.hs(ta)*.985),g,1);lip.scale.z=1.6}
+ for(const ta of[T.fa,T.ra])if(T.R+P.Ra<belt(ta)-.03)for(const q of[-1,1]){const lip=mk(new THREE.TorusGeometry(P.Ra+.004,.021,8,30,Math.PI),T.gc>=.22?M.trim:'paint',X(ta),T.R,q*(P.hs(ta)*.985),g,1);lip.scale.z=1.6}
  {const tf=P.rw[0]-.03;if(P.cab(tf)>.2)mk(rbox(.17,.05,.03,.012),'paint',X(tf),top(tf)+.015,0,g)}
  {const yc0=(yU(0)+top(0))/2,lo=yc0-(yc0-yU(0))*.84,hi=yc0+(belt(0)-yc0)*.84,wf=hw(0)*.83,xf=L/2+.04,bar=lo+(hi-lo)*.45;
   mk(rbox(.07,.05,wf*2,.02),'paint',xf,bar,0,g);for(let i=1;i<=3;i++)mk(new THREE.BoxGeometry(.02,.008,wf*1.6),M.chrome,xf+.004,bar+(hi-bar)*i/4+.01,0,g);
@@ -867,7 +927,7 @@ function audioTick(dt){
 }
 
 /* ---------- Bedienfeld ---------- */
-const pane=$('#pane');let tab='modell';
+const pane=$('#pane');let tab='modell',modelCat=null;
 let host=pane;
 const grp=(title,...k)=>{const g=el('div',{class:'grp'},el('h3',{text:title}),...k);host.append(g);return g};
 function chips(key,opts,cb){const d=el('div',{class:'chips'});for(const[v,l]of opts){d.append(el('button',{class:'chip',text:l,'aria-pressed':String(S[key]===v),onclick:()=>{S[key]=v;[...d.children].forEach(b=>b.setAttribute('aria-pressed',String(b.textContent===l)));cb();save()}}))}return d}
@@ -879,17 +939,20 @@ function swatch(key,list,cb){const d=el('div',{class:'sw'}),inp=el('input',{type
 function slider(key,label,min,max,step,fmt,cb){const o=el('output',{text:fmt(S[key])}),i=el('input',{type:'range',id:'s_'+key,min,max,step,value:S[key]});
  i.addEventListener('input',()=>{S[key]=+i.value;o.textContent=fmt(S[key]);cb();save()});return el('div',{class:'sl'},el('label',{for:'s_'+key,text:label}),o,i)}
 function silhouette(T){const p=profile(T),n=48;let d='';for(let i=0;i<=n;i++){const t=i/n;d+=(i?'L':'M')+(t*T.L).toFixed(2)+' '+(2-p.top(t)).toFixed(2)}for(let i=n;i>=0;i--){const t=i/n;d+='L'+(t*T.L).toFixed(2)+' '+(2-p.yU(t)).toFixed(2)}
- return`<svg viewBox="-0.1 0 5.6 2.05" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><path d="${d}Z" fill="currentColor"/><circle cx="${T.fa*T.L}" cy="${2-T.R}" r="${T.R}" fill="currentColor"/><circle cx="${T.ra*T.L}" cy="${2-T.R}" r="${T.R}" fill="currentColor"/></svg>`}
+ return`<svg viewBox="-0.1 -0.2 6.4 2.25" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><path d="${d}Z" fill="currentColor"/><circle cx="${T.fa*T.L}" cy="${2-T.R}" r="${T.R}" fill="currentColor"/><circle cx="${T.ra*T.L}" cy="${2-T.R}" r="${T.R}" fill="currentColor"/></svg>`}
 const rebuild=()=>{buildCar();if(inside)setView()},rebuild0=rebuild;
 const KEEP=['gfx','vfx','flare','drop','shake','spinSpeed','vol','show','ui','sfx','spin'];
 let toastT=0;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2200)}
 function garage(){try{const a=JSON.parse(localStorage.getItem('larsens-garage')||'[]');return Array.isArray(a)?a.filter(x=>x&&x.s):[]}catch(e){return[]}}
 function garageSave(a){try{localStorage.setItem('larsens-garage',JSON.stringify(a))}catch(e){}}
-function reloadAll(){save();applyUi();applyGfx();applyScene();buildCar(1);setView();show();$('#bLift').setAttribute('aria-pressed',S.lift);$('#bLight').setAttribute('aria-pressed',S.lights)}
+function reloadAll(){modelCat=null;save();applyUi();applyGfx();applyScene();buildCar(1);setView();show();$('#bLift').setAttribute('aria-pressed',S.lift);$('#bLight').setAttribute('aria-pressed',S.lights)}
 const PANES={
  modell(){
-  const c=el('div',{class:'cards'});TYPES.forEach((t,i)=>c.append(el('button',{class:'card','aria-pressed':String(S.type===i),html:silhouette(t)+`<b>${t.n}</b><small>${t.d}</small>`,onclick:()=>{S.type=i;save();outPos=inside?outPos:camera.position.clone().sub(controls.target);buildCar(1);setView();show()}})));
-  grp('Karosserie',c);
+  if(!modelCat)modelCat=TYPES[S.type].cat;
+  const cc=el('div',{class:'chips'});for(const[k,l]of CATS){const n=TYPES.filter(t=>t.cat===k).length;cc.append(el('button',{class:'chip',text:l+' · '+n,'aria-pressed':String(modelCat===k),onclick:()=>{modelCat=k;show()}}))}
+  grp('Kategorie',cc);
+  const c=el('div',{class:'cards'});TYPES.forEach((t,i)=>{if(t.cat!==modelCat)return;c.append(el('button',{class:'card','aria-pressed':String(S.type===i),html:silhouette(t)+`<b>${t.n}</b><small>${t.d}</small>`,onclick:()=>{S.type=i;save();outPos=inside?outPos:camera.position.clone().sub(controls.target);buildCar(1);setView();show()}}))});
+  grp((CATS.find(x=>x[0]===modelCat)||['',''])[1]+' – '+TYPES.length+' Modelle insgesamt',c);
  },
  garage(){
   const gn=el('input',{class:'txt',id:'gname',maxlength:'24',placeholder:'Name für dieses Auto','aria-label':'Name für dieses Auto'}),gl=el('div',{class:'stack'}),list=garage();
@@ -993,7 +1056,7 @@ function applyUi(){const r=document.documentElement.style;r.setProperty('--accen
 const TABS=[['modell','Modell'],['lack','Lack'],['felgen','Felgen'],['reifen','Reifen'],['tuning','Tuning'],['motor','Motor'],['innen','Innen'],['szene','Szene'],['garage','Garage'],['optionen','Optionen']];
 function show(){host=pane;pane.textContent='';PANES[tab]();[...$('#tabs').children].forEach(b=>b.setAttribute('aria-selected',String(b.dataset.t===tab)))}
 TABS.forEach(([k,l])=>$('#tabs').append(el('button',{role:'tab','data-t':k,text:l,onclick:()=>{tab=k;show();pane.scrollTop=0}})));
-function randomize(){const r=a=>a[Math.floor(Math.random()*a.length)];
+function randomize(){modelCat=null;const r=a=>a[Math.floor(Math.random()*a.length)];
  Object.assign(S,{type:Math.floor(Math.random()*TYPES.length),paint:r(PAINTS)[0],paint2:r(PAINTS)[0],finish:r(FIN)[0],rim:r(RIMS)[0],rimCol:r(RIMCOL),rimIn:16+Math.floor(Math.random()*8),
   spoiler:r(['none','none','lip','wing','gt']),stripes:r(['none','none','doppel','einzel']),seatCol:r(SEATCOL),engine:r(ENG).id,caliper:r(['#ffc400','#c1121f','#1d6fe0','#39c14a']),roof:r(['body','body','black','glass']),glow:Math.random()<.3,glowCol:r(NEON)});
  save();outPos=inside?outPos:camera.position.clone().sub(controls.target);buildCar(1);setView();show()}
@@ -1038,7 +1101,7 @@ function drawBg(g,w,h,kind){
  else if(kind==='streifen'){g.fillStyle='#0d0f13';g.fillRect(0,0,w,h);g.save();g.translate(w/2,h/2);g.rotate(-.42);const cs=[hex(pc),S.ui,'#f4f5f7'];[[-.2,.16],[.02,.05],[.11,.02]].forEach(([o,t],i)=>{g.fillStyle=cs[i];g.fillRect(-m*2,o*m,m*4,t*m)});g.restore();const v=g.createLinearGradient(0,hz,0,h);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.6)');g.fillStyle=v;g.fillRect(0,0,w,h)}
  else{const r=g.createRadialGradient(w/2,hz,0,w/2,hz,m*.8);r.addColorStop(0,'#ffffff');r.addColorStop(1,'#c4ccd6');g.fillStyle=r;g.fillRect(0,0,w,h);const f=g.createLinearGradient(0,hz,0,h);f.addColorStop(0,'rgba(120,130,145,0)');f.addColorStop(1,'rgba(120,130,145,.5)');g.fillStyle=f;g.fillRect(0,hz,w,h-hz)}
 }
-let shotSeq=0;
+let shotSeq=0,shotFull=false,saving=false;
 function grade(g,w,h){const P={sw:{sat:0,con:1.15},kino:{sat:.9,con:1.18,split:.1},vintage:{sat:.7,con:.92,lift:.06,tint:[1.08,1,.84]},kraeftig:{sat:1.4,con:1.12},nacht:{sat:.85,con:1.2,tint:[.78,.88,1.12],gain:.82}}[S.wpFilter];if(!P)return;
  const im=g.getImageData(0,0,w,h),d=im.data,sat=P.sat,con=P.con,lift=(P.lift||0)*255,t=P.tint||[1,1,1],gn=P.gain||1,sp=(P.split||0)*255;
  for(let i=0;i<d.length;i+=4){let r=d[i],gg=d[i+1],b=d[i+2];const l=.299*r+.587*gg+.114*b;r=l+(r-l)*sat;gg=l+(gg-l)*sat;b=l+(b-l)*sat;
@@ -1050,9 +1113,10 @@ function glowFx(g,cv,w,h){const a=S.wpGlow;if(a<=0)return;const sw=Math.max(8,w>
  const c3=document.createElement('canvas');c3.width=Math.max(2,sw>>4);c3.height=Math.max(2,sh>>4);const z=c3.getContext('2d');z.imageSmoothingQuality='high';z.drawImage(c2,0,0,c3.width,c3.height);
  g.save();g.globalCompositeOperation='lighter';g.imageSmoothingQuality='high';g.globalAlpha=a*.8;g.drawImage(c3,0,0,w,h);g.globalAlpha=a*.7;g.drawImage(c2,0,0,w,h);g.restore()}
 function speedLines(g,w,h,a){let sd=11;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;g.save();for(let i=0;i<70;i++){const y=rnd()*h,len=w*(.2+rnd()*.6),x=rnd()*w-len/2,t=Math.max(1,h*(.0012+rnd()*.003)),gr=g.createLinearGradient(x,0,x+len,0);gr.addColorStop(0,'rgba(255,255,255,0)');gr.addColorStop(.5,`rgba(255,255,255,${a*(.25+rnd()*.5)})`);gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.fillRect(x,y,len,t)}g.restore()}
-async function makeShot(){
- const my=++shotSeq;
- const f=FMT[S.wpFmt]||FMT.iphone,cap=Math.min(renderer.capabilities.maxTextureSize||4096,4096),k=Math.min(1,cap/Math.max(f.w,f.h)),w=Math.round(f.w*k),h=Math.round(f.h*k);
+async function makeShot(full){
+ const my=++shotSeq;full=full===true;
+ try{
+ const f=FMT[S.wpFmt]||FMT.iphone,cap=Math.min(renderer.capabilities.maxTextureSize||4096,4096),k=Math.min(1,cap/Math.max(f.w,f.h)),pv=full?1:Math.min(1,960/(Math.max(f.w,f.h)*k)),w=Math.round(f.w*k*pv),h=Math.round(f.h*k*pv);
  const custom=S.wpBg!=='szene'&&!inside,txt=S.wpText.trim(),sub=S.wpSub.trim(),cam=camera.clone();cam.aspect=w/h;
  if(!inside){cam.fov={weit:55,normal:28,tele:13}[S.wpLens]||28;cam.updateProjectionMatrix();const D={schraeg:[.72,.28,.64],front:[1,.14,.03],seite:[.03,.12,1],heck:[-.8,.25,.55],oben:[.4,1,.35],tief:[.8,.04,.55]}[S.wpCam];
   const dir=D?new THREE.Vector3(...D):camera.position.clone().sub(controls.target).normalize();dir.y=Math.max(.02,dir.y+S.wpElev*.55);dir.normalize();
@@ -1086,9 +1150,11 @@ async function makeShot(){
  if(bar){g.fillStyle='#000';g.fillRect(0,0,w,bar);g.fillRect(0,h-bar,w,bar)}
  if(edge){g.fillStyle='#f6f4ee';g.fillRect(0,0,w,edge);g.fillRect(0,0,edge,h);g.fillRect(w-edge,0,edge,h);g.fillRect(0,h-edge*3,w,edge*3)}
  if(S.wpFrame==='linie'){g.strokeStyle=S.ui;g.lineWidth=Math.max(2,s0*.004);const o=s0*.03;g.strokeRect(o,o,w-2*o,h-2*o)}
- const blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',.94));if(my!==shotSeq||!blob)return;shotBlob=blob;
+ const blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',.94));if(my!==shotSeq||!blob)return false;shotBlob=blob;shotFull=full;
  if(shotUrl)URL.revokeObjectURL(shotUrl);shotUrl=URL.createObjectURL(shotBlob);const im=$('#shotImg');im.src=shotUrl;im.classList.toggle('round',S.wpFmt==='pfp');
- $('#shotMsg').textContent=`${w} × ${h} Pixel`+(k<1?' (auf diesem Gerät verkleinert)':'')+(S.wpFmt==='pfp'?' · rund wie in den meisten Apps':'')+(inside&&S.wpBg!=='szene'?' · im Innenraum immer mit 3D-Umgebung':'');
+ $('#shotMsg').textContent=`${Math.round(f.w*k)} × ${Math.round(f.h*k)} Pixel`+(k<1?' (auf diesem Gerät verkleinert)':'')+(S.wpFmt==='pfp'?' · rund wie in den meisten Apps':'')+(inside&&S.wpBg!=='szene'?' · im Innenraum immer mit 3D-Umgebung':'');
+ return true;
+ }catch(e){if(my===shotSeq)$('#shotMsg').textContent='Das Bild konnte nicht erstellt werden. Wähle ein kleineres Format und versuch es noch einmal.';return false}
 }
 /* Fotostudio-Bedienung */
 const wbody=$('#wbody'),WT=[['format','Format'],['bg','Kulisse'],['cam','Kamera'],['text','Text'],['fx','Effekte']];let wtab='format';
@@ -1115,14 +1181,18 @@ $('#bShot').onclick=()=>{$('#shot').hidden=false;$('#shotMsg').textContent='Bild
 $('#shotClose').onclick=()=>{$('#shot').hidden=true;show()};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#shot').hidden=true});
 $('#shotSave').onclick=async()=>{
- const msg=$('#shotMsg'),hint='Falls kein Download startet: Halte das Bild gedrückt (Handy) oder klicke mit rechts darauf (PC) und wähle „Bild sichern“.';
- if(!shotBlob)return;const name='larsens-autowerkstatt-'+S.wpFmt+'.jpg';
- if(!DL&&matchMedia('(pointer:coarse)').matches){let file=null;try{file=new File([shotBlob],name,{type:'image/jpeg'})}catch(e){}
-  if(file&&navigator.canShare&&navigator.canShare({files:[file]})){msg.textContent='Tippe im Menü auf „Bild sichern“, dann liegt es in deiner Galerie.';
-   try{await navigator.share({files:[file]});msg.textContent='Fertig. Das Bild liegt in deiner Galerie, wenn du „Bild sichern“ gewählt hast.'}catch(e){msg.textContent=e&&e.name==='AbortError'?'Nicht gespeichert.':hint}return}}
- if(!DL){try{const a=document.createElement('a');a.href=shotUrl;a.download='larsens-autowerkstatt-'+S.wpFmt+'.jpg';document.body.append(a);a.click();a.remove()}catch(e){}msg.textContent=hint;return}
- try{await DL.save({filename:'larsens-autowerkstatt-'+S.wpFmt+'.jpg',data:shotBlob});msg.textContent='Gespeichert. Du findest das Bild in deinen Downloads oder Fotos.'}
- catch(e){msg.textContent=e&&e.code==='declined'?'Nicht gespeichert.':e&&e.code==='rate_limited'?'Kurz warten und noch einmal versuchen.':hint}
+ const msg=$('#shotMsg'),btn=$('#shotSave'),hint='Falls nichts passiert: Halte das Bild oben gedrückt (Handy) oder klicke mit rechts darauf (PC) und wähle „Bild sichern“.';
+ if(saving)return;saving=true;btn.setAttribute('aria-busy','true');
+ try{
+  if(!shotFull){clearTimeout(shotTimer);msg.textContent='Bild wird in voller Größe erstellt …';await new Promise(r=>setTimeout(r,30));const ok=await makeShot(true);if(!ok||!shotFull||!shotBlob)return}
+  const name='larsens-autowerkstatt-'+S.wpFmt+'.jpg';
+  if(DL){try{await DL.save({filename:name,data:shotBlob});msg.textContent='Gespeichert. Du findest das Bild in deinen Downloads oder Fotos.'}catch(e){msg.textContent=e&&e.code==='declined'?'Nicht gespeichert.':e&&e.code==='rate_limited'?'Kurz warten und noch einmal versuchen.':hint}return}
+  if(matchMedia('(pointer:coarse)').matches){let file=null;try{file=new File([shotBlob],name,{type:'image/jpeg'})}catch(e){}
+   if(file&&navigator.canShare&&navigator.canShare({files:[file]})){msg.textContent='Tippe im Menü auf „Bild sichern“, dann liegt es in deiner Galerie.';
+    try{await navigator.share({files:[file]});msg.textContent='Fertig. Das Bild liegt in deiner Galerie, wenn du „Bild sichern“ gewählt hast.'}
+    catch(e){msg.textContent=e&&e.name==='AbortError'?'Nicht gespeichert.':e&&e.name==='NotAllowedError'?'Das Bild ist fertig. Tippe jetzt noch einmal auf „In Galerie speichern“.':hint}return}}
+  try{const a=document.createElement('a');a.href=shotUrl;a.download=name;document.body.append(a);a.click();a.remove();msg.textContent='Bild heruntergeladen. Du findest es im Ordner „Downloads“.'}catch(e){msg.textContent=hint}
+ }finally{saving=false;btn.removeAttribute('aria-busy')}
 };
 
 /* ---------- Effekte ---------- */

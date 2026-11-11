@@ -2,6 +2,19 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 4.3 – 12. November 2026
+
+**Kategorien und viel mehr Modelle**
+- 12 Kategorien: Sportwagen, Supersportler, Muscle Cars, Klassiker, Limousinen, Kombis, Kompakt & Stadt, SUV, Geländewagen, Pickups, Vans & Transporter, Elektro-Studien
+- 67 Modelle statt 14, zum Beispiel Stretch-Limousine, Monster-Geländewagen, Klassik-Limousine, Stromlinien-Limousine, Kastenwagen, Hochdach-Mini, Sport-Pickup und Flunder
+- Unter „Modell“ wählst du erst die Kategorie, dann das Modell; hinter jeder Kategorie steht die Anzahl
+
+**Fotostudio repariert**
+- Die Vorschau wird jetzt klein berechnet, das Bild erst beim Speichern in voller Größe. Vorher wurde bei jeder Änderung das volle Bild berechnet, was Handys überlasten konnte
+- Der Speichern-Knopf lässt sich nicht mehr doppelt auslösen
+- Klare Meldungen: am PC „Bild heruntergeladen“, am Handy der Hinweis auf „Bild sichern“; falls das Handy das Menü nicht sofort öffnet, reicht ein zweites Tippen
+- Schlägt die Berechnung fehl, sagt die App das, statt hängen zu bleiben
+
 ## Version 4.2 – 11. November 2026
 
 - Innenraum: Der Blick bleibt dort, wohin du schaust, wenn du etwas änderst (Sitze, Lenkrad, Farben, Bildschirm …). Vorher drehte sich der Kopf bei jeder Änderung zurück nach vorn.

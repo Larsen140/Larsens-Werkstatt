@@ -38,7 +38,7 @@ Danach startet sie vom Homescreen im Vollbild und läuft auch ohne Internet. Am 
 
 ## Was die App kann
 
-- **14 Karosserien:** vom Sportcoupé über SUV, Pickup und Van bis zum Stadtflitzer
+- **67 Modelle in 12 Kategorien:** Sportwagen, Supersportler, Muscle Cars, Klassiker, Limousinen, Kombis, Kompakte, SUV, Geländewagen, Pickups, Vans und Elektro-Studien
 - **Lack:** jede Farbe, 9 Lackarten, Kontrast- oder Glasdach, Rennstreifen, Farbwechsel-Animation
 - **Felgen und Reifen:** 8 Designs, 16 bis 23 Zoll, Bremssättel, Reifenprofile, Breite, Sturz
 - **Tuning:** Fahrwerk, Spoiler, Breitbau-Kit, Dachbox, LED-Leiste, Startnummer, Unterbodenlicht, Hydraulik
