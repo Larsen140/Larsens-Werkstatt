@@ -2,6 +2,19 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 3.5 – 11. November 2026
+
+**Neues Fotostudio** (Knopf „Bild“)
+- Übersichtlich in fünf Bereichen: Format, Kulisse, Kamera, Text, Effekte
+- Kamera: Zoom, Höhe, seitliche Position, Neigung und drei Objektive (Weitwinkel, Normal, Tele), neuer Blickwinkel „Froschperspektive“
+- 10 Kulissen, neu: Sonnenuntergang, Skyline bei Nacht und eigene Farbe; die 3D-Umgebung lässt sich direkt im Studio wechseln
+- Filter: Kino, Kräftig, Schwarzweiß, Vintage, Nacht
+- Effekte: dunkle Ecken, Leuchten, Filmkorn, Speed-Linien
+- Rahmen: Kino-Balken, weißer Rand, feine Linie
+- Text: zweite Zeile, Kontur, Schrift „Block“, Farbfelder
+- Neues Format „Story“ (1080 × 1920)
+- Licht und Unterbodenlicht direkt im Studio schaltbar
+
 ## Version 3.4 – 11. November 2026
 
 - Größere, klarere Knöpfe mit Symbolen; die Motor-Leiste füllt auf dem Handy die ganze Breite

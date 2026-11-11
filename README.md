@@ -4,8 +4,7 @@ Ein 3D-Auto-Konfigurator im Browser. Bau dir dein eigenes Auto, stell es in die 
 
 ## Link zur App
 
-- **App bei Claude:** https://claude.ai/artifact/DQGjg1SFpWF2jE6RDJCDD2 (privat, bis du sie dort über „Teilen“ freigibst)
-- **App über GitHub Pages:** https://larsen140.github.io/Larsens-Werkstatt/ (funktioniert, sobald GitHub Pages aktiviert ist, siehe unten)
+https://larsen140.github.io/Larsens-Werkstatt/
 
 ### GitHub Pages aktivieren
 
@@ -31,7 +30,7 @@ Danach startet sie vom Homescreen im Vollbild und läuft auch ohne Internet. Am 
 - **Motor und Sound:** 9 Motoren, Leistungsstufen, Auspuffanlagen, Nitro, Hupe
 - **Innenraum:** Sitze, Bezüge, Farben, Ambientelicht, Blick vom Fahrersitz
 - **Umgebungen:** Werkstatt mit Hebebühne, Rennstrecke, Studios, Abendsonne, Neon-Nacht
-- **Bild erstellen:** Hintergrundbild für iPhone, Android, iPad/Tablet und PC, Profilbild, Banner, 7 Hintergründe, eigener Text
+- **Fotostudio:** Hintergrundbild, Profilbild, Banner und Story mit 10 Kulissen, Kamera-Reglern, Filtern, Effekten, Rahmen und eigenem Text
 - **Garage:** bis zu 12 eigene Autos speichern und wieder laden
 
 ## Dateien
