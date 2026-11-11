@@ -212,7 +212,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[n,v]of Object.entries(a)){if(n==='class')e.className=v;else if(n==='text')e.textContent=v;else if(n==='html')e.innerHTML=v;else if(n.startsWith('on'))e.addEventListener(n.slice(2),v);else e.setAttribute(n,v)}k.forEach(c=>c&&e.append(c));return e};
 /* Homescreen-Pflicht: nur in der GitHub-Version (dort gibt es ein Manifest), nur auf Handy und Tablet */
-const VERSION='4.4';
+const VERSION='4.5';
 {const bv=document.getElementById('bootV');if(bv)bv.textContent='Version '+VERSION}
 (function(){const de=document.documentElement;if(!de.classList.contains('pwa'))return;
  const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),alone=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
@@ -360,6 +360,7 @@ const SCENES={
 const FMT={pfp:{n:'Profilbild',w:1080,h:1080},banner:{n:'Banner',w:1500,h:500},story:{n:'Story',w:1080,h:1920},iphone:{n:'iPhone',w:1290,h:2796},handy:{n:'Android-Handy',w:1440,h:3200},ipad:{n:'iPad / Tablet',w:2048,h:2732},pc:{n:'PC Full HD',w:1920,h:1080},pc4k:{n:'PC 4K',w:3840,h:2160}};
 
 const UPDATES=[
+ ['Version 4.5','Unterbodenbeleuchtung neu: Leuchtröhren unter dem Auto, größerer und hellerer Lichtschein am Boden. Der schwarze Balken in gespeicherten Bildern mit Unterbodenlicht ist weg.'],
  ['Version 4.4','Karosserie-Fehler an der Kabine behoben: Zwischen Frontscheibe und Seitenfenster sitzt jetzt eine A-Säule, das Seitenfenster läuft vorn und hinten spitz zu statt eckig abzubrechen, die Scheibenwischer ragen nicht mehr über die Scheibe hinaus und die Scheinwerfer sind keine weißen Flächen mehr.'],
  ['Version 4.3','12 Kategorien mit insgesamt '+TYPES.length+' Modellen, darunter neue Klassiker, Muscle Cars, Geländewagen, Pickups, Vans und Elektro-Studien. Fotostudio repariert: Die Vorschau wird klein berechnet und das Bild erst beim Speichern in voller Größe, das entlastet das Handy und verhindert Hänger.'],
  ['Version 4.2','Innenraum: Dein Blick bleibt, wohin du schaust, wenn du etwas änderst. Vorher drehte sich der Kopf bei jeder Änderung zurück nach vorn.'],
@@ -547,7 +548,7 @@ function drawPlate(g,w,h){const st=S.plateStyle,us=st==='us',bg=st==='schwarz'?'
  if(us){g.fillText(txt,w/2,h*.6,w*.86);g.font=`600 ${h*.15}px "Saira","Segoe UI",sans-serif`;g.fillText(land,w/2,h*.17,w*.8)}else g.fillText(f==='schmal'?txt.split('').join('\u200A'):txt,(x0+w-h*.1)/2,h*.54,w-h*.1-x0)}
 const plateTex=()=>{const us=S.plateStyle==='us';return ctex('pl'+[S.plate,S.plateStyle,S.plateLand,S.plateFont,S.plateCol,S.plateTxt,S.plateFrame].join('|'),512,us?256:128,drawPlate)};
 const numTex=()=>ctex('num'+S.num,256,256,(g)=>{g.clearRect(0,0,256,256);g.fillStyle='#f4f5f7';g.beginPath();g.arc(128,128,120,0,7);g.fill();g.fillStyle='#111';g.font='800 150px "Saira Condensed","Arial Narrow",sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(S.num.trim().slice(0,3),128,138,200)});
-const glowTex=()=>ctex('glow',128,128,(g)=>{const r=g.createRadialGradient(64,64,10,64,64,64);r.addColorStop(0,'#fff');r.addColorStop(.5,'#888');r.addColorStop(1,'#000');g.fillStyle=r;g.fillRect(0,0,128,128)});
+const glowTex=()=>ctex('glow2',128,128,(g)=>{g.clearRect(0,0,128,128);const r=g.createRadialGradient(64,64,4,64,64,64);r.addColorStop(0,'rgba(255,255,255,1)');r.addColorStop(.35,'rgba(255,255,255,.8)');r.addColorStop(.7,'rgba(255,255,255,.3)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,128,128)});
 const softTex=()=>ctex('soft',64,64,(g)=>{const r=g.createRadialGradient(32,32,0,32,32,32);r.addColorStop(0,'rgba(255,255,255,1)');r.addColorStop(.4,'rgba(255,255,255,.45)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,64,64)});
 const screenTex=()=>ctex('scr2'+S.ambCol+S.screen,512,S.screen==='hoch'?768:256,(g,w,h)=>{const gr=g.createLinearGradient(0,0,w,h);gr.addColorStop(0,'#0b1220');gr.addColorStop(1,'#05070a');g.fillStyle=gr;g.fillRect(0,0,w,h);
  g.fillStyle=S.ambCol;g.fillRect(0,0,w,6);g.fillStyle='#fff';g.font='700 26px "Saira Condensed",sans-serif';g.textBaseline='middle';g.textAlign='left';g.fillText('LARSENS AUTOWERKSTATT',22,38);g.textAlign='right';g.fillStyle='#8c97a6';g.font='600 22px "Saira",sans-serif';g.fillText('21 °C',w-22,38);
@@ -587,7 +588,7 @@ const M={
  carbon:P3({color:0xffffff,roughness:.35,clearcoat:1,metalness:.3}),
  wheel:P1({roughness:.6}),deco:P3({}),mat:P1({roughness:1}),belt:P1({roughness:.8}),wtrim:P1({}),drl:P1({color:0x111111,emissive:0xffffff}),tled:P1({color:0x220000,emissive:col('#ff1525')}),
  seat:P1({}),accent:P1({roughness:.6}),dash:P1({roughness:.7}),amb:new THREE.MeshBasicMaterial({}),screen:new THREE.MeshBasicMaterial({toneMapped:false}),
- plate:P1({roughness:.5,transparent:true}),glow:new THREE.MeshBasicMaterial({transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,fog:false})
+ plate:P1({roughness:.5,transparent:true}),glow:new THREE.MeshBasicMaterial({transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}),neon:new THREE.MeshBasicMaterial({toneMapped:false,fog:false})
 };
 const flipU={value:new THREE.Color()};
 M.flip.onBeforeCompile=sh=>{sh.uniforms.uC2=flipU;sh.fragmentShader='uniform vec3 uC2;\n'+sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\n float ffk=pow(1.0-clamp(abs(dot(normalize(vNormal),normalize(vViewPosition))),0.0,1.0),1.2);\n diffuseColor.rgb=mix(diffuseColor.rgb,uC2,ffk);')};
@@ -712,6 +713,7 @@ function buildExtras(g){
   const yc0=(yU(0)+top(0))/2,lo0=yc0-(yc0-yU(0))*.84,hi0=yc0+(belt(0)-yc0)*.84,yf=lo0+(hi0-lo0)*.45,yc1=(yU(1)+top(1))/2,lo1=yc1-(yc1-yU(1))*.84,hi1=yc1+(belt(1)-yc1)*.84,yr=lo1+(hi1-lo1)*.46;
   if(S.plateShow==='both'){mk(hold,M.trim,L/2+.079,yf,0,g);mk(pg,M.plate,L/2+.0875,yf,0,g).rotation.y=Math.PI/2}
   if(S.plateShow!=='none'){mk(hold,M.trim,-L/2-.05,yr,0,g);mk(pg,M.plate,-L/2-.0585,yr,0,g).rotation.y=-Math.PI/2}}
+ {const len=(T.ra-T.fa)*L-2*P.Ra-.1,xm=(X(T.fa)+X(T.ra))/2;for(const q of[-1,1])mk(new THREE.BoxGeometry(len,.03,.03),M.neon,xm,T.gc+.005,q*(W/2-.1),g);mk(new THREE.BoxGeometry(.03,.03,W*.62),M.neon,L/2-.3,T.gc+.03,0,g);mk(new THREE.BoxGeometry(.03,.03,W*.62),M.neon,-L/2+.32,T.gc+.03,0,g)}
  spot=new THREE.SpotLight(0xffffff,0,16,.55,.7,1.2);spot.position.set(L/2-.2,.7,0);spot.target.position.set(L/2+7,0,0);g.add(spot,spot.target);
 }
 
@@ -762,9 +764,9 @@ function buildCar(drop){
  linerMesh=new THREE.Mesh(geo,[M.liner,M.none,M.liner,M.liner,M.liner,M.liner,M.liner]);linerMesh.scale.set(.992,.97,.972);linerMesh.position.y=.025;bodyG.add(linerMesh);
  buildExtras(bodyG);buildInterior(bodyG);buildWheels();
  if(!blob){blob=new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({color:0,map:softTex(),transparent:true,opacity:.6,depthWrite:false,fog:false}));blob.rotation.x=-Math.PI/2;blob.position.y=.01;scene.add(blob)}blob.scale.set(T.L*1.35,T.W*1.9,1);
- glowMesh=new THREE.Mesh(new THREE.PlaneGeometry(T.L*1.25,T.W*1.9),M.glow);glowMesh.rotation.x=-Math.PI/2;glowMesh.position.y=.016;car.add(glowMesh);
+ glowMesh=new THREE.Mesh(new THREE.PlaneGeometry(T.L*1.6,T.W*2.7),M.glow);glowMesh.rotation.x=-Math.PI/2;glowMesh.position.y=.016;car.add(glowMesh);
  buildLift();
- glowLight=new THREE.PointLight(0xffffff,0,4,2);glowLight.position.set(0,.14,0);car.add(glowLight);
+ glowLight=new THREE.PointLight(0xffffff,0,7,2);glowLight.position.set(0,.14,0);car.add(glowLight);
  applyMats();stats();need=3;shDirty=true;
 }
 function applyMats(){
@@ -779,7 +781,7 @@ function applyMats(){
  if(bodyMesh){bodyMesh.material[0]=bodyMat;bodyMesh.material[3]=S.roof==='body'?bodyMat:S.roof==='glass'?M.glass:M.roof;linerMesh.material[3]=S.roof==='glass'?M.none:M.liner}
  M.roof.color.copy(col(S.roof==='black'?'#08090b':S.paint2));M.roof.metalness=S.roof==='black'?0:f[0];M.roof.roughness=S.roof==='black'?.2:f[1];M.roof.clearcoat=1;
  M.glass.opacity=.22+S.tint*.74;
- const lit=S.lights?1:0;M.head.emissive.copy(col(S.lamp));M.head.emissiveIntensity=.02+lit*.45;M.tail.emissiveIntensity=.2+lit*.6;M.drl.emissive.copy(col(S.lamp));M.drl.emissiveIntensity=.5+lit*4;M.tled.emissiveIntensity=.6+lit*3.5;
+ const lit=S.lights?1:0;M.head.emissive.copy(col(S.lamp));M.head.emissiveIntensity=.01+lit*.1;M.tail.emissiveIntensity=.2+lit*.6;M.drl.emissive.copy(col(S.lamp));M.drl.emissiveIntensity=.5+lit*4;M.tled.emissiveIntensity=.6+lit*3.5;
  {const ch=S.trimc==='chrom';M.wtrim.color.copy(col(ch?'#e6e8ec':'#08090b'));M.wtrim.metalness=ch?1:.2;M.wtrim.roughness=ch?.1:.35}
  if(spot){spot.color.copy(col(S.lamp));spot.intensity=lit*1.1}
  const rf=S.rimFin;M.rim.color.copy(col(S.rimCol));M.rim.metalness=rf==='matt'?.5:rf==='chrom'?1:.85;M.rim.roughness=rf==='matt'?.65:rf==='chrom'?.05:.25;M.rim.clearcoat=rf==='gloss'?1:0;
@@ -794,7 +796,7 @@ function applyMats(){
  const px=plateTex();if(M.plate.map!==px){M.plate.map=px;M.plate.needsUpdate=true}
  M.flareH.map=M.flareT.map=softTex();M.flareH.color.copy(col(S.lamp));M.flareH.opacity=S.flare&&S.lights?.6:0;M.flareT.opacity=S.flare&&S.lights?.5:0;
  const nx=numTex();if(M.num.map!==nx){M.num.map=nx;M.num.needsUpdate=true}
- M.glow.map=glowTex();M.glow.color.copy(col(S.glowCol));if(glowMesh){glowMesh.visible=S.glow;glowLight.color.copy(col(S.glowCol));glowLight.intensity=S.glow?3:0}
+ M.glow.map=glowTex();M.glow.color.copy(col(S.glowCol));if(glowMesh){glowMesh.visible=S.glow;glowLight.color.copy(col(S.glowCol));glowLight.intensity=S.glow?7:0}M.neon.color.copy(col(S.glowCol)).lerp(new THREE.Color(1,1,1),.35);M.neon.visible=S.glow;
  controls.autoRotate=S.spin&&!inside;controls.autoRotateSpeed=S.show?S.spinSpeed*2.4:S.spinSpeed;need=3;
 }
 function stats(){
@@ -1221,7 +1223,7 @@ function fxTick(dt,n){
  if(liftG){liftG.visible=liftY>.005||lt>0;liftArms.position.y=T.gc-.07+liftY}
  if(inside){camera.position.y+=dl;controls.target.y+=dl}else{controls.target.y=P.top(.55)*.5+liftY;controls.maxPolarAngle=Math.PI/2-.04+Math.min(.5,liftY*.5)}
  if(bodyG)bodyG.position.y=S.ride/1000+(hopT<1.6?.16*Math.exp(-3.2*hopT)*Math.abs(Math.sin(hopT*9)):0)+(dropT<1.4?-.03*Math.exp(-5*dropT)*Math.sin(dropT*16):0);
- if(glowLight&&S.glow){const k=S.glowPulse?.55+.45*Math.sin(clock.elapsedTime*4):1;glowLight.intensity=3*k;M.glow.opacity=k}
+ if(glowLight&&S.glow){const k=S.glowPulse?.55+.45*Math.sin(clock.elapsedTime*4):1;glowLight.intensity=7*k;M.glow.opacity=k}
  if(S.show&&!inside){const ty=controls.target.y+1.1+Math.sin(clock.elapsedTime*.35)*.9;camera.position.y+=(ty-camera.position.y)*Math.min(1,dt*.8)}
 }
 

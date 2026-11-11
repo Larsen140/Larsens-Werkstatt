@@ -2,6 +2,14 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 4.5 – 12. November 2026
+
+**Unterbodenbeleuchtung**
+- Der schwarze Balken in gespeicherten Bildern ist weg (der Lichtschein hatte einen undurchsichtigen Rand, der auf den Kulissen als dunkles Rechteck erschien)
+- Leuchtröhren unter dem Auto: links, rechts, vorn und hinten
+- Größerer und hellerer Lichtschein am Boden, das Licht strahlt stärker auf die Umgebung
+- Die Scheinwerfer leuchten nicht mehr als helle Fläche
+
 ## Version 4.4 – 12. November 2026
 
 **Karosserie-Fehler an der Kabine behoben (bei allen Modellen)**
