@@ -12,6 +12,10 @@ https://larsen140.github.io/Larsens-Werkstatt/
 2. Bei **Source** „Deploy from a branch“ wählen, Branch **main**, Ordner **/ (root)**.
 3. Speichern. Nach ein bis zwei Minuten ist die App unter dem Link oben erreichbar.
 
+## Werbevideo
+
+[`video/werbung.mp4`](video/werbung.mp4) – 34 Sekunden im Hochformat (1080 × 1920), direkt aus der App gefilmt.
+
 ## Zum Homescreen hinzufügen
 
 Auf Handy und Tablet muss die App einmal zum Homescreen hinzugefügt werden. Beim ersten Öffnen im Browser zeigt sie die Anleitung an:
