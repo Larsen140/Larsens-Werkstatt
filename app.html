@@ -5,7 +5,7 @@
 /* Layout: 3D-Bühne füllt den Raum, Werkbank-Panel rechts (Desktop) bzw. unten (Handy). Ein einziger dunkler Showroom-Look. */
 :root{
   color-scheme:dark;
-  --bg:#0b0e13; --panel:#11151c; --raise:#19202a; --line:#2a323e;
+  --bg:#0b0e13; --panel:#11151c; --raise:#1e2631; --line:#2a323e;
   --fg:#eef2f6; --mute:#8c97a6; --accent:#ffb020; --accent-ink:#1b1300; --ice:#7cd4ff; --stop:#ff4d4d;
   --display:"Saira Condensed","Arial Narrow",Impact,sans-serif;
   --body:"Saira","Segoe UI",system-ui,sans-serif;
@@ -30,15 +30,17 @@ body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 #stage::before{content:"";position:absolute;inset:0 0 auto;height:calc(110px + var(--st,0px));background:linear-gradient(#05070acc,#05070a00);pointer-events:none}
 #c{display:block;width:100%;height:100%;touch-action:none}
 #panel{width:390px;flex:none;display:flex;flex-direction:column;background:var(--panel);border-left:1px solid var(--line);min-height:0}
-#tabs{display:flex;gap:4px;overflow-x:auto;padding:10px max(16px,env(safe-area-inset-right,0px)) 0 16px;border-bottom:1px solid var(--line);scrollbar-width:none}
-#tabs::-webkit-scrollbar{display:none}
-#tabs button{flex:none;background:none;border:0;border-bottom:3px solid transparent;padding:8px 10px 9px;font:700 16px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
-#tabs button[aria-selected="true"]{color:var(--fg);border-color:var(--accent)}
-#pane{flex:1;overflow-y:auto;padding-block:16px calc(28px + var(--sb,0px));padding-left:16px;padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+#tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding:10px max(12px,env(safe-area-inset-right,0px)) 10px 12px;border-bottom:1px solid var(--line)}
+#tabs button{min-width:0;background:var(--raise);border:1px solid var(--line);border-radius:7px;padding:10px 1px;font:700 13.5px/1 var(--display);letter-spacing:.02em;text-transform:uppercase;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+#pane{flex:1;overflow-y:auto;padding-block:12px calc(24px + var(--sb,0px));padding-left:12px;padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:12px}
 .grp{display:flex;flex-direction:column;gap:9px}
+.stack{display:flex;flex-direction:column;gap:8px}
+#pane>.grp{background:#151a22;border:1px solid var(--line);border-radius:10px;padding:12px}
+#pane>.grp>h3{color:var(--fg)}
 .grp>h3{margin:0;font:700 13px/1 var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{background:var(--raise);border:1px solid var(--line);border-radius:6px;padding:7px 11px;font-size:13px;line-height:1.2}
+.chip{background:var(--raise);border:1px solid var(--line);border-radius:7px;padding:9px 13px;font-size:14px;line-height:1.2}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
 .sw{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
 .sw button{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);padding:0}
@@ -63,8 +65,10 @@ body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 #hTitle{top:calc(12px + var(--st,0px));left:max(16px,env(safe-area-inset-left,0px));flex-direction:column;gap:0;pointer-events:none}
 #hTitle span{font:700 12px/1 var(--display);letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-shadow:0 1px 6px #000c;margin-bottom:4px}
 #hTitle h1{margin:0;font:800 30px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;text-shadow:0 1px 10px #000a}
-#hTitle p{margin:3px 0 0;font-size:13px;font-variant-numeric:tabular-nums;color:#dfe6ee;text-shadow:0 1px 6px #000c}
-#hView{top:calc(12px + var(--st,0px));right:12px;flex-direction:column;align-items:flex-end}
+#hTitle p{white-space:nowrap;margin:3px 0 0;font-size:13px;font-variant-numeric:tabular-nums;color:#dfe6ee;text-shadow:0 1px 6px #000c}
+#hView{top:calc(12px + var(--st,0px));right:max(12px,env(safe-area-inset-right,0px));flex-direction:column;align-items:flex-end}
+#more{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+#bMore{display:none}
 #hSound{bottom:12px;left:max(16px,env(safe-area-inset-left,0px));right:12px;align-items:center;flex-wrap:wrap}
 .hb{background:#0d1117cc;border:1px solid #ffffff2e;border-radius:6px;padding:7px 11px;font:700 14px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);user-select:none;-webkit-user-select:none;touch-action:manipulation}
 .hb[aria-pressed="true"]{background:var(--fg);color:#0b0e13;border-color:var(--fg)}
@@ -97,16 +101,20 @@ body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 .row>*{flex:1}
 @media (max-width:820px){
   #app{flex-direction:column}
-  #stage{flex:none;height:50%}
+  #stage{flex:none;height:47%}
   #panel{width:auto;flex:1;border-left:0;border-top:1px solid var(--line)}
-  #tabs{padding-left:max(16px,env(safe-area-inset-left,0px))}
-  #pane{padding-left:max(16px,env(safe-area-inset-left,0px))}
+  #tabs{padding-left:max(12px,env(safe-area-inset-left,0px))}
+  #pane{padding-left:max(12px,env(safe-area-inset-left,0px))}
   #hTitle h1{font-size:22px}
   #hTitle p{font-size:12px}
   .hb{padding:6px 9px;font-size:13px}
-  #hView{top:calc(78px + var(--st,0px));right:0;left:0;padding:0 12px 0 max(16px,env(safe-area-inset-left,0px));flex-direction:row;flex-wrap:nowrap;align-items:center;overflow-x:auto;scrollbar-width:none}
-  #hView::-webkit-scrollbar{display:none}
-  #hView .hb{flex:none}
+  #bMore{display:block}
+  #more{display:none}
+  #hView.open #more{display:flex}
+  #hTitle{right:150px}
+  #hTitle span{font-size:11px;letter-spacing:.14em}
+  #hSound{gap:5px;right:max(12px,env(safe-area-inset-right,0px))}
+  #gas{padding:9px 16px}
   #shotBox{flex-direction:column}
   #shotForm{width:auto}
   #shotPrev img{max-height:38vh}
@@ -121,17 +129,20 @@ body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
     <div class="hud" id="hTitle"><span>Larsens Autowerkstatt</span><h1 id="hName">Sportcoupé</h1><p id="hStats"></p></div>
     <div class="hud" id="hView">
       <button class="hb go" id="bShot">Bild erstellen</button>
-      <button class="hb" id="bIn" aria-pressed="false">Innenraum</button>
-      <button class="hb" id="bLift" aria-pressed="false">Hebebühne</button>
-      <button class="hb" id="bSpin" aria-pressed="true">Drehen</button>
-      <button class="hb" id="bLight" aria-pressed="true">Licht</button>
+      <button class="hb" id="bMore" aria-expanded="false" aria-controls="more">Ansicht</button>
+      <div id="more">
+        <button class="hb" id="bIn" aria-pressed="false">Innenraum</button>
+        <button class="hb" id="bLift" aria-pressed="false">Hebebühne</button>
+        <button class="hb" id="bSpin" aria-pressed="true">Drehen</button>
+        <button class="hb" id="bLight" aria-pressed="true">Licht</button>
+      </div>
     </div>
     <div class="hud" id="hSound">
       <button class="hb" id="bStart">Motor starten</button>
       <button class="hb go" id="gas">Gas</button>
       <button class="hb" id="bHorn">Hupe</button>
       <button class="hb" id="bNitro">Nitro</button>
-      <div id="rpm"><span id="rpmT">Motor aus</span><i><b id="rpmB"></b></i></div>
+      <div id="rpm" hidden><span id="rpmT">Motor aus</span><i><b id="rpmB"></b></i></div>
     </div>
   </div>
   <aside id="panel">
@@ -179,6 +190,11 @@ body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[n,v]of Object.entries(a)){if(n==='class')e.className=v;else if(n==='text')e.textContent=v;else if(n==='html')e.innerHTML=v;else if(n.startsWith('on'))e.addEventListener(n.slice(2),v);else e.setAttribute(n,v)}k.forEach(c=>c&&e.append(c));return e};
 /* Homescreen-Pflicht: nur in der GitHub-Version (dort gibt es ein Manifest), nur auf Handy und Tablet */
+(function(){const de=document.documentElement;if(!de.classList.contains('pwa'))return;
+ const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),alone=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
+ const fit=()=>{let h=window.innerHeight;if(ios&&alone){const a=screen.width,b=screen.height,port=window.innerHeight>=window.innerWidth;h=Math.max(h,port?Math.max(a,b):Math.min(a,b))}de.style.setProperty('--H',h+'px')};
+ fit();window.addEventListener('resize',fit);window.addEventListener('orientationchange',()=>{setTimeout(fit,60);setTimeout(fit,400)});
+})();
 let gated=false;
 (function(){
  if(!document.querySelector('link[rel="manifest"]'))return;
@@ -258,6 +274,7 @@ const SCENES={
 const FMT={pfp:{n:'Profilbild',w:1080,h:1080},banner:{n:'Banner',w:1500,h:500},iphone:{n:'iPhone',w:1290,h:2796},handy:{n:'Android-Handy',w:1440,h:3200},ipad:{n:'iPad / Tablet',w:2048,h:2732},pc:{n:'PC Full HD',w:1920,h:1080},pc4k:{n:'PC 4K',w:3840,h:2160}};
 
 const UPDATES=[
+ ['Version 3.3','Aufgeräumte Bedienung: alle Bereiche auf einen Blick als Kacheln, Einstellungen in klaren Karten, eigener Bereich „Garage“, Ansicht-Knöpfe in einem Menü, Drehzahl nur bei laufendem Motor. Vollbild auf dem iPhone ohne Balken unten.'],
  ['Version 3.2','Flüssiger: Die Schärfe passt sich automatisch an dein Gerät an, Schatten werden nur bei Bedarf neu berechnet und im Stillstand ruht die Grafik. Schnellerer Start mit Ladebild. Echtes Vollbild ohne Balken unten. Behoben: Zoom beim Tippen in Textfelder, Motor lief im Hintergrund weiter, überlappende Bild-Vorschauen.'],
  ['Version 3.1','Die GitHub-Version ist jetzt eine richtige App: Auf Handy und Tablet fügst du sie zum Homescreen hinzu, sie startet im Vollbild und läuft danach auch ohne Internet.'],
  ['Version 3','Bild erstellen: Profilbild, Banner und 7 Hintergründe, 6 Blickwinkel, Werkstatt-Logo. 4 neue Karosserien, Rennstrecke, Garage zum Speichern, Nitro, Warnblinker, Breitbau-Kit, Dachbox, LED-Leiste, Startnummer, Farbwechsel-Lack, Kamerafahrten, Turbopfeifen, Drehzahlbegrenzer und Werkstatt-Geräusche.'],
@@ -642,8 +659,8 @@ function fitDist(asp,fov){const r=T.L*.58,vf=fov*Math.PI/360,hf=Math.atan(Math.t
 function setView(){
  if(inside){camera.fov=68;const d=new THREE.Vector3(1,-.03,.12).normalize(),e=new THREE.Vector3(eye.x,eye.y+bodyG.position.y+liftY,eye.z);
   controls.target.copy(e).addScaledVector(d,.3);camera.position.copy(e);controls.minDistance=controls.maxDistance=.3;controls.minPolarAngle=.9;controls.maxPolarAngle=2.2;controls.rotateSpeed=-.35}
- else{camera.fov=35;const dir=outPos?outPos.clone().normalize():new THREE.Vector3(.7,.26,.66).normalize();const tgt=new THREE.Vector3(0,P.top(.55)*.5,0);
-  controls.target.copy(tgt);camera.position.copy(tgt).addScaledVector(dir,fitDist(camera.aspect,35)*1.02);controls.minDistance=T.L*.62;controls.maxDistance=16;controls.minPolarAngle=.15;controls.maxPolarAngle=Math.PI/2-.04;controls.rotateSpeed=1}
+ else{camera.fov=35;const dir=outPos?outPos.clone().normalize():new THREE.Vector3(.7,.22,.66).normalize();const tgt=new THREE.Vector3(0,P.top(.55)*.5,0);
+  controls.target.copy(tgt);camera.position.copy(tgt).addScaledVector(dir,fitDist(camera.aspect,35)*(camera.aspect<1.3?1.2:1.02));controls.minDistance=T.L*.62;controls.maxDistance=16;controls.minPolarAngle=.15;controls.maxPolarAngle=Math.PI/2-.04;controls.rotateSpeed=1}
  camera.updateProjectionMatrix();controls.autoRotate=S.spin&&!inside;controls.update();
  $('#bIn').setAttribute('aria-pressed',inside);$('#bIn').textContent=inside?'Außenansicht':'Innenraum';
 }
@@ -697,7 +714,7 @@ function audioTick(dt){
  if(A.on){const target=e.idle+thr*span*.94;if(A.rpm<target)A.rpm=Math.min(target,A.rpm+span*dt/(ev?1.1:1.7));else A.rpm+=(target-A.rpm)*Math.min(1,dt*(ev?1.2:2.2))}else A.rpm+=(0-A.rpm)*Math.min(1,dt*4);
  const n=clamp((A.rpm-e.idle)/span,0,1);
  const bw=Math.round(A.on?clamp(A.rpm/e.max,0,1)*100:0),bt=A.on?(ev?Math.round(n*100)+' % Leistung':Math.round(A.rpm/50)*50+' U/min'):'Motor aus';
- if(bw!==A.bw){A.bw=bw;rpmB.style.width=bw+'%'}if(bt!==A.bt){A.bt=bt;rpmT.textContent=bt}
+ if(bw!==A.bw){A.bw=bw;rpmB.style.width=bw+'%'}if(bt!==A.bt){A.bt=bt;rpmT.textContent=bt}if(A.on!==A.vis){A.vis=A.on;rpmT.parentNode.hidden=!A.on}
  if(!A.ctx)return n;const now=A.ctx.currentTime,set=(p,v)=>p.setTargetAtTime(v,now,.03),ex=S.exhaust,xm=ex==='renn'?1.5:ex==='sport'?1.25:1;
  set(A.lf.g.gain,liftMove&&S.sfx?.05:0);
  if(!A.on){set(A.eng.gain,0);set(A.ng.gain,0);set(A.tw.g.gain,0);return n}
@@ -734,13 +751,12 @@ const PANES={
  modell(){
   const c=el('div',{class:'cards'});TYPES.forEach((t,i)=>c.append(el('button',{class:'card','aria-pressed':String(S.type===i),html:silhouette(t)+`<b>${t.n}</b><small>${t.d}</small>`,onclick:()=>{S.type=i;save();outPos=inside?outPos:camera.position.clone().sub(controls.target);buildCar(1);setView();show()}})));
   grp('Karosserie',c);
-  const inp=el('input',{class:'txt',id:'plate',maxlength:'10',value:S.plate,'aria-label':'Kennzeichen'});inp.addEventListener('input',()=>{S.plate=inp.value;applyMats();save()});
-  grp('Kennzeichen',inp);
-  grp('Schnellstart',el('div',{class:'chips'},el('button',{class:'chip',text:'Zufälliges Auto',onclick:randomize})));
-  const gn=el('input',{class:'txt',id:'gname',maxlength:'24',placeholder:'Name für dieses Auto','aria-label':'Name für dieses Auto'}),gl=el('div',{class:'grp'}),list=garage();
+ },
+ garage(){
+  const gn=el('input',{class:'txt',id:'gname',maxlength:'24',placeholder:'Name für dieses Auto','aria-label':'Name für dieses Auto'}),gl=el('div',{class:'stack'}),list=garage();
   list.forEach((it,i)=>gl.append(el('div',{class:'gr'},el('span',{text:it.n}),el('button',{class:'chip',text:'Laden',onclick:()=>{for(const k in it.s)if(k in DEF&&typeof it.s[k]===typeof DEF[k])S[k]=it.s[k];if(!TYPES[S.type])S.type=0;reloadAll()}}),el('button',{class:'chip',text:'Löschen',onclick:()=>{const a=garage();a.splice(i,1);garageSave(a);show()}}))));
   grp('Meine Garage',gn,el('button',{class:'wide',text:'Dieses Auto in die Garage stellen',onclick:()=>{const a=garage(),c={};for(const k in S)if(!KEEP.includes(k)&&!k.startsWith('wp'))c[k]=S[k];a.unshift({n:gn.value.trim()||TYPES[S.type].n+' '+(a.length+1),s:c});garageSave(a.slice(0,12));show()}}),list.length?gl:el('p',{class:'note',text:'Noch keine Autos gespeichert. Bis zu 12 passen hinein.'}));
-  grp('Hinweis',el('p',{class:'note',text:'Die Karosserien sind eigene, markenfreie Formen. Aus '+TYPES.length+' Grundtypen, freier Farbwahl und allen Teilen entstehen Millionen Kombinationen.'}));
+  grp('Überraschung',el('button',{class:'wide',text:'Zufälliges Auto bauen',onclick:randomize}));
  },
  lack(){
   grp('Farbe',swatch('paint',PAINTS,()=>{applyMats();sfx('spray')}),el('div',{class:'chips'},toggle('rainbow','Farbwechsel-Animation',applyMats)),el('p',{class:'note',text:'Über das Farbfeld rechts ist jede beliebige Farbe möglich.'}));
@@ -767,6 +783,8 @@ const PANES={
   grp('Heckspoiler',chips('spoiler',[['none','Keiner'],['lip','Abrisskante'],['wing','Heckflügel'],['gt','GT-Flügel Carbon']],rebuild));
   grp('Anbauteile',el('div',{class:'chips'},toggle('splitter','Frontsplitter',rebuild),toggle('skirts','Seitenschweller',rebuild),toggle('diff','Diffusor',rebuild),toggle('scoop','Lufthutze',rebuild),toggle('wide','Breitbau-Kit',rebuild),toggle('roofbox','Dachbox',rebuild),toggle('ledbar','LED-Lichtleiste',rebuild)));
   const ni=el('input',{class:'txt',id:'num',maxlength:'3',value:S.num,placeholder:'z. B. 7','aria-label':'Startnummer'});ni.addEventListener('input',()=>{S.num=ni.value;save();rebuild()});grp('Startnummer auf den Türen',ni);
+  const inp=el('input',{class:'txt',id:'plate',maxlength:'10',value:S.plate,'aria-label':'Kennzeichen'});inp.addEventListener('input',()=>{S.plate=inp.value;applyMats();save()});
+  grp('Kennzeichen',inp);
   grp('Endrohre',chips('pipes',[[1,'1'],[2,'2'],[4,'4']],rebuild));
   grp('Scheiben',slider('tint','Tönung',0,1,.05,v=>Math.round(v*100)+' %',applyMats));
   grp('Licht',chips('lamp',[['#ffffff','Weiß'],['#bfe3ff','Xenon-Blau'],['#ffd24a','Gelb']],applyMats),el('div',{class:'chips'},toggle('hazard','Warnblinker',()=>{})));
@@ -802,7 +820,8 @@ const PANES={
   grp('Kamera',el('div',{class:'chips'},toggle('show','Showmodus',applyMats)),slider('spinSpeed','Drehgeschwindigkeit',.2,3,.1,v=>v.toFixed(1).replace('.',',')+'×',applyMats));
   grp('Ton',slider('vol','Lautstärke',0,1,.05,v=>Math.round(v*100)+' %',()=>{if(A.master)A.master.gain.value=S.vol}));
   grp('Farbe der Bedienung',swatch('ui',[['#ffb020','Bernstein'],['#7cd4ff','Eisblau'],['#b6e600','Limette'],['#ff6b5a','Koralle'],['#ff7ad9','Pink'],['#f4f5f7','Weiß']],applyUi));
-  const ul=el('div',{class:'grp'});for(const[v,t]of UPDATES)ul.append(el('p',{class:'note',html:'<b style="color:var(--fg)">'+v+'</b> '+t}));grp('Updates',ul);
+  const ul=el('div',{class:'stack'});for(const[v,t]of UPDATES)ul.append(el('p',{class:'note',html:'<b style="color:var(--fg)">'+v+'</b> '+t}));grp('Updates',ul);
+  grp('Über die Autos',el('p',{class:'note',text:'Die Karosserien sind eigene, markenfreie Formen. Aus '+TYPES.length+' Grundtypen, freier Farbwahl und allen Teilen entstehen Millionen Kombinationen.'}));
   grp('Speicher',el('p',{class:'note',text:'Dein Auto wird automatisch auf diesem Gerät gemerkt.'}),el('button',{class:'wide',text:'Alles zurücksetzen',onclick:()=>{Object.assign(S,DEF);save();outPos=null;inside=false;applyGfx();applyUi();buildCar(1);applyScene();setView();show()}}));
  }
 };
@@ -813,7 +832,7 @@ function applyGfx(){const q=S.gfx,mx=window.devicePixelRatio||1;dpr=Math.min(mx,
 function adapt(raw){if(S.gfx!=='auto'||raw>.25)return;if(warm<50){warm++;return}ftSum+=raw;ftN++;if(ftN<40)return;const avg=ftSum/ftN;ftSum=ftN=0;
  if(avg>.024){if(dpr>1){dpr=Math.max(1,dpr-.25);renderer.setPixelRatio(dpr);resize()}else if(key.castShadow&&avg>.034){key.castShadow=false;need=3}}}
 function applyUi(){const r=document.documentElement.style;r.setProperty('--accent',S.ui);const c=new THREE.Color(S.ui);r.setProperty('--accent-ink',(c.r*.3+c.g*.59+c.b*.11)>.5?'#141000':'#ffffff')}
-const TABS=[['modell','Modell'],['lack','Lack'],['felgen','Felgen'],['reifen','Reifen'],['tuning','Tuning'],['motor','Motor'],['innen','Innen'],['szene','Szene'],['optionen','Optionen']];
+const TABS=[['modell','Modell'],['lack','Lack'],['felgen','Felgen'],['reifen','Reifen'],['tuning','Tuning'],['motor','Motor'],['innen','Innen'],['szene','Szene'],['garage','Garage'],['optionen','Optionen']];
 function show(){pane.textContent='';PANES[tab]();[...$('#tabs').children].forEach(b=>b.setAttribute('aria-selected',String(b.dataset.t===tab)))}
 TABS.forEach(([k,l])=>$('#tabs').append(el('button',{role:'tab','data-t':k,text:l,onclick:()=>{tab=k;show();pane.scrollTop=0}})));
 function randomize(){const r=a=>a[Math.floor(Math.random()*a.length)];
@@ -823,6 +842,7 @@ function randomize(){const r=a=>a[Math.floor(Math.random()*a.length)];
 function toggleInside(){if(!inside)outPos=camera.position.clone().sub(controls.target);inside=!inside;setView()}
 
 /* ---------- HUD ---------- */
+const hView=$('#hView'),bMore=$('#bMore');bMore.onclick=()=>{const o=hView.classList.toggle('open');bMore.setAttribute('aria-expanded',o);bMore.setAttribute('aria-pressed',o)};canvas.addEventListener('pointerdown',()=>{hView.classList.remove('open');bMore.setAttribute('aria-expanded','false');bMore.setAttribute('aria-pressed','false')});
 $('#bIn').onclick=()=>{toggleInside();if(tab==='innen')show()};
 const bSpin=$('#bSpin'),bLight=$('#bLight');
 bSpin.onclick=()=>{S.spin=!S.spin;const bLift=$('#bLift');bLift.onclick=()=>{S.lift=!S.lift;bLift.setAttribute('aria-pressed',S.lift);save();if(S.sfx)audioInit();if(tab==='szene')show()};$('#bNitro').onclick=nitro;canvas.addEventListener('pointerdown',()=>{camA=null});bLift.setAttribute('aria-pressed',S.lift);

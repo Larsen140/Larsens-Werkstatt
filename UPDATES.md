@@ -2,6 +2,20 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 3.3 – 11. November 2026
+
+**Übersichtlicher**
+- Alle zehn Bereiche stehen als Kacheln auf einen Blick da, nichts muss mehr zur Seite geschoben werden
+- Einstellungen liegen in klar getrennten Karten mit größeren Knöpfen
+- Eigener Bereich „Garage“ für gespeicherte Autos und das Zufallsauto
+- „Modell“ zeigt nur noch die Karosserien, das Kennzeichen steht bei „Tuning“
+- Innenraum, Hebebühne, Drehen und Licht stecken auf dem Handy im Menü „Ansicht“
+- Die Drehzahl-Anzeige erscheint nur bei laufendem Motor
+- Das Auto steht auf dem Handy kleiner im Bild und wird nicht mehr von Knöpfen verdeckt
+
+**Vollbild**
+- Auf dem iPhone füllt die App vom Homescreen aus die ganze Höhe, der dunkle Balken unten ist weg
+
 ## Version 3.2 – 11. November 2026
 
 **Flüssiger**
