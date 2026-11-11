@@ -2,6 +2,13 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 3.9 – 11. November 2026
+
+- Leerlauf und leichtes Gas kommen jetzt von Mikrofon-Aufnahmen echter Autos: ein Vierzylinder am Auspuff, ein Sechszylinder und ein amerikanischer V8
+- Ab etwa 2700 U/min blendet der Klang in die Simulator-Aufnahmen über, weil es frei nutzbare echte Aufnahmen bei hohen Drehzahlen nicht für jede Motorart gibt
+- Die Hupe ist eine echte Autohupe: gedrückt halten zum Hupen
+- Quellen und Lizenzen stehen in `SOUNDS.md`
+
 ## Version 3.8 – 11. November 2026
 
 - Alle 9 Motoren laufen jetzt mit Aufnahmen statt mit erzeugtem Klang: je Motor fünf Drehzahlstufen, die überblendet und in der Tonhöhe nachgeführt werden
