@@ -2,6 +2,12 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 3.6 – 11. November 2026
+
+- Der Knopf im Fotostudio heißt jetzt „In Galerie speichern“
+- Auf Handy und Tablet öffnet er direkt das Speichern-Menü des Geräts; ein Tipp auf „Bild sichern“ legt das Bild in die Galerie
+- Am PC wird das Bild wie bisher heruntergeladen
+
 ## Version 3.5 – 11. November 2026
 
 **Neues Fotostudio** (Knopf „Bild“)

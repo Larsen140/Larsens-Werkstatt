@@ -197,7 +197,7 @@ body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
     <p id="shotMsg" role="status"></p>
     <div id="wtabs" role="tablist" aria-label="Foto-Einstellungen"></div>
     <div id="wbody"></div>
-    <button class="hb go" id="shotSave">Bild speichern</button>
+    <button class="hb go" id="shotSave">In Galerie speichern</button>
   </div>
 </div>
 
@@ -209,7 +209,7 @@ body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[n,v]of Object.entries(a)){if(n==='class')e.className=v;else if(n==='text')e.textContent=v;else if(n==='html')e.innerHTML=v;else if(n.startsWith('on'))e.addEventListener(n.slice(2),v);else e.setAttribute(n,v)}k.forEach(c=>c&&e.append(c));return e};
 /* Homescreen-Pflicht: nur in der GitHub-Version (dort gibt es ein Manifest), nur auf Handy und Tablet */
-const VERSION='3.5';
+const VERSION='3.6';
 {const bv=document.getElementById('bootV');if(bv)bv.textContent='Version '+VERSION}
 (function(){const de=document.documentElement;if(!de.classList.contains('pwa'))return;
  const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),alone=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
@@ -298,6 +298,7 @@ const SCENES={
 const FMT={pfp:{n:'Profilbild',w:1080,h:1080},banner:{n:'Banner',w:1500,h:500},story:{n:'Story',w:1080,h:1920},iphone:{n:'iPhone',w:1290,h:2796},handy:{n:'Android-Handy',w:1440,h:3200},ipad:{n:'iPad / Tablet',w:2048,h:2732},pc:{n:'PC Full HD',w:1920,h:1080},pc4k:{n:'PC 4K',w:3840,h:2160}};
 
 const UPDATES=[
+ ['Version 3.6','„In Galerie speichern“: Auf Handy und Tablet öffnet sich direkt das Speichern-Menü, ein Tipp auf „Bild sichern“ legt das Bild in die Galerie.'],
  ['Version 3.5','Neues Fotostudio: Kamera mit Zoom, Höhe, Neigung und drei Objektiven, 10 Kulissen, Filter, Leuchten, Filmkorn, Speed-Linien, Rahmen, zweite Textzeile mit Kontur und das Format „Story“.'],
  ['Version 3.4','Größere, klarere Knöpfe mit Symbolen. Die App holt sich neue Versionen jetzt selbst, sobald du sie öffnest. Die installierte Version steht hier und im Ladebild.'],
  ['Version 3.3','Aufgeräumte Bedienung: alle Bereiche auf einen Blick als Kacheln, Einstellungen in klaren Karten, eigener Bereich „Garage“, Ansicht-Knöpfe in einem Menü, Drehzahl nur bei laufendem Motor. Vollbild auf dem iPhone ohne Balken unten.'],
@@ -985,7 +986,11 @@ $('#shotClose').onclick=()=>{$('#shot').hidden=true;show()};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#shot').hidden=true});
 $('#shotSave').onclick=async()=>{
  const msg=$('#shotMsg'),hint='Falls kein Download startet: Halte das Bild gedrückt (Handy) oder klicke mit rechts darauf (PC) und wähle „Bild sichern“.';
- if(!shotBlob)return;if(!DL){try{const a=document.createElement('a');a.href=shotUrl;a.download='larsens-autowerkstatt-'+S.wpFmt+'.jpg';document.body.append(a);a.click();a.remove()}catch(e){}msg.textContent=hint;return}
+ if(!shotBlob)return;const name='larsens-autowerkstatt-'+S.wpFmt+'.jpg';
+ if(!DL&&matchMedia('(pointer:coarse)').matches){let file=null;try{file=new File([shotBlob],name,{type:'image/jpeg'})}catch(e){}
+  if(file&&navigator.canShare&&navigator.canShare({files:[file]})){msg.textContent='Tippe im Menü auf „Bild sichern“, dann liegt es in deiner Galerie.';
+   try{await navigator.share({files:[file]});msg.textContent='Fertig. Das Bild liegt in deiner Galerie, wenn du „Bild sichern“ gewählt hast.'}catch(e){msg.textContent=e&&e.name==='AbortError'?'Nicht gespeichert.':hint}return}}
+ if(!DL){try{const a=document.createElement('a');a.href=shotUrl;a.download='larsens-autowerkstatt-'+S.wpFmt+'.jpg';document.body.append(a);a.click();a.remove()}catch(e){}msg.textContent=hint;return}
  try{await DL.save({filename:'larsens-autowerkstatt-'+S.wpFmt+'.jpg',data:shotBlob});msg.textContent='Gespeichert. Du findest das Bild in deinen Downloads oder Fotos.'}
  catch(e){msg.textContent=e&&e.code==='declined'?'Nicht gespeichert.':e&&e.code==='rate_limited'?'Kurz warten und noch einmal versuchen.':hint}
 };
