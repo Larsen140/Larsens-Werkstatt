@@ -42,6 +42,7 @@ Danach startet sie vom Homescreen im Vollbild und läuft auch ohne Internet. Am 
 - `index.html` – die fertige App, wie GitHub Pages sie ausliefert
 - `app.html` – die App-Quelle; `./build.sh` baut daraus `index.html`
 - `UPDATES.md` – Liste aller Updates
+- `sounds/` – Motor-Aufnahmen; Quellen und Lizenzen stehen in `SOUNDS.md`
 - `manifest.webmanifest`, `sw.js` und die Symbole – machen die Seite zur installierbaren App
 
 Die Karosserien sind eigene, markenfreie Formen und keine Nachbauten echter Automodelle.

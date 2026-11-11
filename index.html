@@ -209,7 +209,7 @@ body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[n,v]of Object.entries(a)){if(n==='class')e.className=v;else if(n==='text')e.textContent=v;else if(n==='html')e.innerHTML=v;else if(n.startsWith('on'))e.addEventListener(n.slice(2),v);else e.setAttribute(n,v)}k.forEach(c=>c&&e.append(c));return e};
 /* Homescreen-Pflicht: nur in der GitHub-Version (dort gibt es ein Manifest), nur auf Handy und Tablet */
-const VERSION='3.7';
+const VERSION='3.8';
 {const bv=document.getElementById('bootV');if(bv)bv.textContent='Version '+VERSION}
 (function(){const de=document.documentElement;if(!de.classList.contains('pwa'))return;
  const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),alone=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
@@ -298,6 +298,7 @@ const SCENES={
 const FMT={pfp:{n:'Profilbild',w:1080,h:1080},banner:{n:'Banner',w:1500,h:500},story:{n:'Story',w:1080,h:1920},iphone:{n:'iPhone',w:1290,h:2796},handy:{n:'Android-Handy',w:1440,h:3200},ipad:{n:'iPad / Tablet',w:2048,h:2732},pc:{n:'PC Full HD',w:1920,h:1080},pc4k:{n:'PC 4K',w:3840,h:2160}};
 
 const UPDATES=[
+ ['Version 3.8','Motoren mit Aufnahmen statt erzeugtem Klang: jeder der 9 Motoren hat eigene Drehzahl-Aufnahmen aus einem physikalischen Motor-Simulator, dazu ein aufgenommener Turbo. Hupe klingt wie eine Zweiklang-Hupe.'],
  ['Version 3.7','Drehzahlmesser und Tacho im Innenraum, die beim Gasgeben mitlaufen. Mehr im Innenraum: Lenkrad-Form und -Farbe, Zierleiste, Bildschirm, Schalthebel, Gurte, Verkleidung, Teppich. Vollerer Motorklang mit Werkstatt-Hall. Echter wirkende Autos: Tagfahrlicht, LED-Rückleuchten, Fenster-Zierleisten, Fugen an Haube und Stoßfängern, Scheibenwischer, dritte Bremsleuchte, Radschrauben.'],
  ['Version 3.6','„In Galerie speichern“: Auf Handy und Tablet öffnet sich direkt das Speichern-Menü, ein Tipp auf „Bild sichern“ legt das Bild in die Galerie.'],
  ['Version 3.5','Neues Fotostudio: Kamera mit Zoom, Höhe, Neigung und drei Objektiven, 10 Kulissen, Filter, Leuchten, Filmkorn, Speed-Linien, Rahmen, zweite Textzeile mit Kontur und das Format „Story“.'],
@@ -756,6 +757,7 @@ function audioInit(){
  const ex=(type,f)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.value=f;g.gain.value=0;o.connect(g);g.connect(A.master);o.start();return{o,g}};A.tw=ex('sine',2000);A.lf=ex('sawtooth',58);
  A.pw=[0,1].map(()=>{const o=ctx.createOscillator(),g=ctx.createGain();g.gain.value=0;o.connect(g);g.connect(A.ws);o.start();return{o,g}});
  {const len=Math.floor(ctx.sampleRate*.9),ir=ctx.createBuffer(2,len,ctx.sampleRate);for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.8)}A.cv=ctx.createConvolver();A.cv.buffer=ir;A.wet=ctx.createGain();A.wet.gain.value=(SCENES[S.scene]||{}).room?.24:.07;A.cv.connect(A.wet);A.wet.connect(A.master);A.eng.connect(A.cv)}
+ A.slp=ctx.createBiquadFilter();A.slp.type='lowpass';A.slp.frequency.value=6000;A.slp.connect(A.bark);
  A.o=['sawtooth','square','sawtooth','sine'].map(t=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type=t;g.gain.value=0;o.connect(g);g.connect(A.ws);o.start();return{o,g}});
  const buf=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;A.nbuf=buf;
  const ns=ctx.createBufferSource();ns.buffer=buf;ns.loop=true;A.nf=ctx.createBiquadFilter();A.nf.type='bandpass';A.nf.Q.value=.8;A.ng=ctx.createGain();A.ng.gain.value=0;ns.connect(A.nf);A.nf.connect(A.ng);A.ng.connect(A.master);ns.start();
@@ -767,11 +769,18 @@ function setWave(e){if(A.waveFor===e.id||!e.cyl)return;const N=96,re=new Float32
  for(let k=1;k<N;k++){let a=.05/Math.sqrt(k);for(let m=1;m*e.cyl<N+4;m++)a+=Math.exp(-Math.pow((k-m*e.cyl)/(e.rumble?1.3:.8),2))/Math.pow(m,.75);
   if(e.rumble)a+=.8*Math.exp(-Math.pow((k-e.cyl/2)/1.1,2))+.35*Math.exp(-Math.pow((k-e.cyl*1.5)/1.2,2));a*=.75+.5*rnd();const ph=rnd()*6.283;re[k]=a*Math.cos(ph);im[k]=a*Math.sin(ph)}
  const w=A.ctx.createPeriodicWave(re,im);A.pw.forEach(p=>p.o.setPeriodicWave(w));A.waveFor=e.id}
-function engineStart(){if(!audioInit())return;const e=engine();setWave(e);
+function engineStart(){if(!audioInit())return;const e=engine();setWave(e);smpStop();loadBank(e).then(b=>{if(A.on&&engine().id===b.id)smpStart(b)}).catch(()=>{});
  if(e.id!=='ev'){const ctx=A.ctx,o=ctx.createOscillator(),g=ctx.createGain(),t=ctx.currentTime;o.type='square';o.frequency.setValueAtTime(22,t);o.frequency.linearRampToValueAtTime(34,t+.55);for(let i=0;i<5;i++){g.gain.setValueAtTime(.16,t+i*.115);g.gain.linearRampToValueAtTime(.03,t+i*.115+.09);burst('lowpass',300,.35,.07,i*.115)}g.gain.linearRampToValueAtTime(0,t+.62);o.connect(g);g.connect(A.lp);o.start(t);o.stop(t+.62);A.rpm=e.idle*2.1}
  else{burst('bandpass',2400,.08,.5);A.rpm=0}
  A.on=true;uiSound()}
-function engineStop(){A.on=false;A.thr=0;uiSound()}
+/* Motor-Aufnahmen (nur in der GitHub-Version vorhanden): mehrere Drehzahl-Schleifen, überblendet und in der Tonhöhe nachgeführt */
+const SMP={r3:['su-low',[1,2,4,6,8]],r4:['su-ss',[1,2,4,6,8]],v6:['tsu',[1,3,5,7,9]],b6:['b-i6r',[1,2,4,6,8]],v8:['b-v8',[1,2,4,6,8]],v8k:['gv8',[1,2,3,5,7]],v10:['v8f',[1,3,5,8,10]],v12:['v12d',[1,3,5,8,10]],ev:['electric',[0,1,3,7]]};
+function loadBuf(name){A.bufs=A.bufs||{};if(!A.bufs[name]){A.bufs[name]=fetch('sounds/'+name+'.flac').then(r=>{if(!r.ok)throw new Error('fehlt');return r.arrayBuffer()}).then(b=>new Promise((res,rej)=>A.ctx.decodeAudioData(b,res,rej)));A.bufs[name].catch(()=>{})}return A.bufs[name]}
+function loadBank(e){const[pre,ns]=SMP[e.id],ev=e.id==='ev';return Promise.all(ns.map(n=>loadBuf(ev?pre+n:pre+'-'+n)).concat(e.turbo?[loadBuf('turbo5')]:[])).then(b=>({id:e.id,rpm:ns.map(n=>ev?300+n*1000:n*1000),buf:b.slice(0,ns.length),turbo:e.turbo?b[ns.length]:null}))}
+function smpStop(){if(!A.smp)return;for(const x of A.smp.v)try{x.s.stop()}catch(e){}if(A.smp.t)try{A.smp.t.s.stop()}catch(e){}A.smp=null;document.documentElement.dataset.snd='erzeugt'}
+function smpStart(bk){smpStop();const mkS=(b,dst)=>{const s=A.ctx.createBufferSource(),g=A.ctx.createGain();s.buffer=b;s.loop=true;g.gain.value=0;s.connect(g);g.connect(dst);s.start(0,Math.random()*b.duration*.6);return{s,g}};
+ A.smp={id:bk.id,v:bk.buf.map((b,i)=>Object.assign(mkS(b,A.slp),{rpm:bk.rpm[i]})),t:bk.turbo?mkS(bk.turbo,A.master):null};document.documentElement.dataset.snd='aufnahme'}
+function engineStop(){A.on=false;A.thr=0;smpStop();uiSound()}
 function uiSound(){const b=$('#bStart');b.querySelector('span').textContent=A.on?'Stopp':'Start';b.setAttribute('aria-label',A.on?'Motor ausschalten':'Motor starten');b.classList.toggle('on',A.on)}
 function setThr(v){if(v&&!A.on)engineStart();const e=engine(),n=(A.rpm-e.idle)/(e.max-e.idle);
  if(!v&&A.thr&&A.on&&A.ctx){if(e.turbo&&n>.45)burst('highpass',2600,.22,.38);if(S.exhaust!=='serie'&&e.id!=='ev'&&n>.55){const k=S.exhaust==='renn'?7:4;for(let i=0;i<k;i++)burst('lowpass',700+Math.random()*600,.5,.05,.15+Math.random()*.7);flameT=.9}}
@@ -781,8 +790,9 @@ function sfx(k){if(!S.sfx||!audioInit())return;const now=A.ctx.currentTime;if(no
  if(k==='wrench')for(let i=0;i<10;i++)burst('bandpass',1400+Math.random()*1000,.2,.035,i*.048);
  else if(k==='spray')burst('highpass',3600,.09,.5);else burst('highpass',5200,.07,.02)}
 function nitro(){if(!audioInit())return;if(!A.on)engineStart();A.nitro=1.6;burst('bandpass',1100,.35,1.5);burst('highpass',4200,.15,1.2)}
-function horn(){if(!audioInit())return;const ctx=A.ctx,t=ctx.currentTime,g=ctx.createGain();g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.13,t+.02);g.gain.setValueAtTime(.13,t+.45);g.gain.linearRampToValueAtTime(0,t+.52);g.connect(A.master);
- for(const f of[415,523]){const o=ctx.createOscillator();o.type='square';o.frequency.value=f;o.connect(g);o.start(t);o.stop(t+.55)}}
+function horn(){if(!audioInit())return;const ctx=A.ctx,t=ctx.currentTime,g=ctx.createGain(),f=ctx.createBiquadFilter(),pk=ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=3400;pk.type='peaking';pk.frequency.value=2300;pk.Q.value=1.2;pk.gain.value=9;
+ g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.2,t+.035);g.gain.setValueAtTime(.2,t+.5);g.gain.linearRampToValueAtTime(0,t+.6);f.connect(pk);pk.connect(g);g.connect(A.master);g.connect(A.cv);
+ for(const fr of[405,407.5,503,506]){const o=ctx.createOscillator();o.type='sawtooth';o.frequency.setValueAtTime(fr*.97,t);o.frequency.linearRampToValueAtTime(fr,t+.05);o.connect(f);o.start(t);o.stop(t+.62)}}
 const rpmB=$('#rpmB'),rpmT=$('#rpmT');
 document.addEventListener('visibilitychange',()=>{if(!A.ctx)return;if(document.hidden)A.ctx.suspend();else if(A.on||liftMove)A.ctx.resume()});
 function audioTick(dt){
@@ -795,6 +805,15 @@ function audioTick(dt){
  if(!A.ctx)return n;const now=A.ctx.currentTime,set=(p,v)=>p.setTargetAtTime(v,now,.03),ex=S.exhaust,xm=ex==='renn'?1.5:ex==='sport'?1.25:1;
  set(A.lf.g.gain,liftMove&&S.sfx?.05:0);
  if(!A.on){set(A.eng.gain,0);set(A.ng.gain,0);set(A.tw.g.gain,0);return n}
+ if(A.smp&&A.smp.id===e.id){const v=A.smp.v,r=ev?300+n*7000:A.rpm;let j=0;while(j<v.length-2&&r>v[j+1].rpm)j++;const t=clamp((r-v[j].rpm)/(v[j+1].rpm-v[j].rpm),0,1);
+  v.forEach((x,i)=>{set(x.g.gain,i===j?Math.cos(t*Math.PI/2):i===j+1?Math.sin(t*Math.PI/2):0);set(x.s.playbackRate,clamp(r/x.rpm,.45,2.2))});
+  A.load=(A.load||0)+((thr?1:0)-(A.load||0))*Math.min(1,dt*6);const lim=!ev&&thr&&n>.93?(Math.sin(now*80)>0?1:.35):1;
+  for(const o of A.o)set(o.g.gain,0);for(const o of A.pw)set(o.g.gain,0);
+  set(A.slp.frequency,1500+A.load*7500+n*2500);set(A.bark.frequency,600+n*600);set(A.bark.gain,ex==='renn'?8:ex==='sport'?4:0);
+  A.eng.gain.setTargetAtTime((ev?.3+.6*n:(.42+.5*A.load+.12*n))*xm*lim*1.5,now,.01);
+  set(A.nf.frequency,700+n*3200);set(A.ng.gain,.008+n*(e.turbo?.04:.015));
+  if(A.smp.t){set(A.smp.t.g.gain,n*n*A.load*.45);set(A.smp.t.s.playbackRate,.7+n*.7);set(A.tw.g.gain,0)}else set(A.tw.g.gain,0);
+  return n}
  if(ev){const f=160+n*1500;set(A.o[3].o.frequency,f);set(A.o[3].g.gain,.12+n*.25);set(A.o[0].o.frequency,f*2.01);set(A.o[0].g.gain,.02+n*.04);set(A.o[1].g.gain,0);set(A.o[2].g.gain,0);set(A.pw[0].g.gain,0);set(A.pw[1].g.gain,0);
   set(A.lp.frequency,3000);set(A.eng.gain,.05+n*.3);set(A.tw.g.gain,0);set(A.nf.frequency,1500+n*3000);set(A.ng.gain,n*.1)}
  else{const f=Math.max(18,A.rpm/60*e.cyl/2),wob=1+Math.sin(now*37)*.012*(1-n);
@@ -877,7 +896,7 @@ const PANES={
   grp('Motor',c);
   grp('Leistungsstufe',chips('stage',[[0,'Serie'],[1,'Stage 1'],[2,'Stage 2'],[3,'Stage 3']],stats));
   grp('Auspuffanlage',chips('exhaust',[['serie','Serie'],['sport','Sport'],['renn','Rennanlage']],()=>{}));
-  grp('Sound',el('p',{class:'note',text:'Starte den Motor unten in der 3D-Ansicht und halte „Gas“ gedrückt: Die Hinterräder drehen durch und qualmen. Turbomotoren zischen beim Loslassen, Sport- und Rennanlage knallen im Schubbetrieb und spucken Flammen.'}));
+  grp('Sound',el('p',{class:'note',text:'Die Verbrennungsmotoren und der Elektromotor laufen mit Aufnahmen aus einem physikalischen Motor-Simulator, je Motor mit eigenem Klang. Starte den Motor unten in der 3D-Ansicht und halte „Gas“ gedrückt: Die Hinterräder drehen durch und qualmen. Turbomotoren zischen beim Loslassen, Sport- und Rennanlage knallen im Schubbetrieb und spucken Flammen.'}));
  },
  innen(){
   grp('Ansicht',el('button',{class:'wide',text:inside?'Zurück zur Außenansicht':'In den Innenraum setzen',onclick:()=>{toggleInside();show()}}));
@@ -910,6 +929,7 @@ const PANES={
   grp('Ton',slider('vol','Lautstärke',0,1,.05,v=>Math.round(v*100)+' %',()=>{if(A.master)A.master.gain.value=S.vol}));
   grp('Farbe der Bedienung',swatch('ui',[['#ffb020','Bernstein'],['#7cd4ff','Eisblau'],['#b6e600','Limette'],['#ff6b5a','Koralle'],['#ff7ad9','Pink'],['#f4f5f7','Weiß']],applyUi));
   const ul=el('div',{class:'stack'});for(const[v,t]of UPDATES)ul.append(el('p',{class:'note',html:'<b style="color:var(--fg)">'+v+'</b> '+t}));grp('Updates · installiert ist Version '+VERSION,ul);
+  grp('Sound-Quellen',el('p',{class:'note',text:'Motor- und Turbo-Aufnahmen: CryHam (Stunt Rally 3), aufgenommen in engine-sim, Lizenz CC BY 4.0; Turbo auf Basis einer Aufnahme von shimsewn (freesound.org, CC BY 4.0). Für die App gekürzt und angeglichen. Hupe, Nitro, Anlasser und Werkstatt-Geräusche werden in der App erzeugt.'}));
   grp('Über die Autos',el('p',{class:'note',text:'Die Karosserien sind eigene, markenfreie Formen. Aus '+TYPES.length+' Grundtypen, freier Farbwahl und allen Teilen entstehen Millionen Kombinationen.'}));
   grp('Speicher',el('p',{class:'note',text:'Dein Auto wird automatisch auf diesem Gerät gemerkt.'}),el('button',{class:'wide',text:'Alles zurücksetzen',onclick:()=>{Object.assign(S,DEF);save();outPos=null;inside=false;applyGfx();applyUi();buildCar(1);applyScene();setView();show()}}));
  }

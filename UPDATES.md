@@ -2,6 +2,15 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 3.8 – 11. November 2026
+
+- Alle 9 Motoren laufen jetzt mit Aufnahmen statt mit erzeugtem Klang: je Motor fünf Drehzahlstufen, die überblendet und in der Tonhöhe nachgeführt werden
+- Die Aufnahmen stammen aus einem physikalischen Motor-Simulator (Quelle und Lizenz in `SOUNDS.md`), nicht von einem Mikrofon an echten Autos
+- Turbomotoren haben einen aufgenommenen Turbo
+- Beim Gasgeben wird der Klang offener, im Leerlauf gedämpfter; die Auspuffanlage färbt ihn weiter
+- Die Hupe klingt wie eine Zweiklang-Hupe (weiterhin in der App erzeugt)
+- Fehlt eine Aufnahme oder kann das Gerät sie nicht abspielen, springt der bisherige erzeugte Klang ein
+
 ## Version 3.7 – 11. November 2026
 
 **Innenraum**
