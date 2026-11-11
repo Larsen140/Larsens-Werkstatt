@@ -228,7 +228,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[n,v]of Object.entries(a)){if(n==='class')e.className=v;else if(n==='text')e.textContent=v;else if(n==='html')e.innerHTML=v;else if(n.startsWith('on'))e.addEventListener(n.slice(2),v);else e.setAttribute(n,v)}k.forEach(c=>c&&e.append(c));return e};
 /* Homescreen-Pflicht: nur in der GitHub-Version (dort gibt es ein Manifest), nur auf Handy und Tablet */
-const VERSION='4.3';
+const VERSION='4.4';
 {const bv=document.getElementById('bootV');if(bv)bv.textContent='Version '+VERSION}
 (function(){const de=document.documentElement;if(!de.classList.contains('pwa'))return;
  const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),alone=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
@@ -376,6 +376,7 @@ const SCENES={
 const FMT={pfp:{n:'Profilbild',w:1080,h:1080},banner:{n:'Banner',w:1500,h:500},story:{n:'Story',w:1080,h:1920},iphone:{n:'iPhone',w:1290,h:2796},handy:{n:'Android-Handy',w:1440,h:3200},ipad:{n:'iPad / Tablet',w:2048,h:2732},pc:{n:'PC Full HD',w:1920,h:1080},pc4k:{n:'PC 4K',w:3840,h:2160}};
 
 const UPDATES=[
+ ['Version 4.4','Karosserie-Fehler an der Kabine behoben: Zwischen Frontscheibe und Seitenfenster sitzt jetzt eine A-Säule, das Seitenfenster läuft vorn und hinten spitz zu statt eckig abzubrechen, die Scheibenwischer ragen nicht mehr über die Scheibe hinaus und die Scheinwerfer sind keine weißen Flächen mehr.'],
  ['Version 4.3','12 Kategorien mit insgesamt '+TYPES.length+' Modellen, darunter neue Klassiker, Muscle Cars, Geländewagen, Pickups, Vans und Elektro-Studien. Fotostudio repariert: Die Vorschau wird klein berechnet und das Bild erst beim Speichern in voller Größe, das entlastet das Handy und verhindert Hänger.'],
  ['Version 4.2','Innenraum: Dein Blick bleibt, wohin du schaust, wenn du etwas änderst. Vorher drehte sich der Kopf bei jeder Änderung zurück nach vorn.'],
  ['Version 4.1','Kennzeichen sitzt jetzt sichtbar vor Stoßfänger und Kühlergrill, mit Halter; der Editor steht ganz oben bei „Tuning“ und die Kamera schwenkt beim Bearbeiten nach vorn. Warnblinker neu: kleine Blinker in den Leuchten und an den Spiegeln statt großer Lichtflecken.'],
@@ -417,11 +418,11 @@ function profile(T){
  const ax=[X(T.fa),X(T.ra)];
  const yU=t=>{const x=X(t);let y=floor(t);for(const a of ax){const d=Math.abs(x-a);if(d<Ra)y=Math.max(y,R+Math.sqrt(Ra*Ra-d*d))}return Math.min(y,belt(t)-.07)};
  const c=T.cab;let i0=0;while(!(c[i0][1]===0&&c[i0+1][1]>0))i0++;let i1=c.length-1;while(!(c[i1][1]===0&&c[i1-1][1]>0))i1--;
- const ws=[c[i0][0],c[i0+1][0]],rw=[c[i1-1][0],c[i1][0]],sg=[ws[0]+.5*(ws[1]-ws[0]),rw[0]+.5*(rw[1]-rw[0])];
+ const ws=[c[i0][0],c[i0+1][0]],rw=[c[i1-1][0],c[i1][0]],sg=[ws[0]+.14*(ws[1]-ws[0]),rw[1]-.14*(rw[1]-rw[0])],d0=ws[0]+.55*(ws[1]-ws[0]);
  const fl=(T.fl||.03)+(S.wide?.055:0),fb=t=>{const x=X(t);return fl*(Math.exp(-Math.pow((x-ax[0])/.42,2))+Math.exp(-Math.pow((x-ax[1])/.42,2)))},hs=t=>hw(t)+fb(t);
  const sec=t=>{const yB=belt(t),cc=cab(t),h=hw(t),b=fb(t),u=yU(t),s=u+.03,g=h*(.9-th*cc),m=Math.min(1,cc/.1);
   return[[u,0],[u,h*.8],[s,h*.97+b],[(s+yB)/2,h+b],[yB-.035,h*.995+b*.8],[yB,h*.965+b*.4],[yB+.03,h*.91],[yB+.045-.01*m+.93*cc,h*.78+(g-h*.78)*m],[yB+.055-.005*m+.99*cc,h*.45+(g*.6-h*.45)*m],[yB+.06+cc,0]]};
- return{belt,cab,X,hw,hs,fl,yU,sec,ws,rw,sg,Ra,top:t=>belt(t)+.06+cab(t)};
+ return{d0,belt,cab,X,hw,hs,fl,yU,sec,ws,rw,sg,Ra,top:t=>belt(t)+.06+cab(t)};
 }
 
 /* ---------- Renderer & Szene ---------- */
@@ -595,7 +596,7 @@ const M={
  std:P3({}),flip:P3({}),roof:P3({}),
  glass:P3({color:col('#0b1014'),transparent:true,opacity:.5,roughness:.04,metalness:0,side:THREE.DoubleSide,depthWrite:false,envMapIntensity:1.6}),
  under:P1({color:0x050506,roughness:.9,side:THREE.DoubleSide}),trim:P3({color:col('#0a0b0d'),roughness:.25,clearcoat:.6}),
- head:P3({color:col('#dfe7f0'),emissive:0xffffff,roughness:.1,metalness:.75,clearcoat:1}),tail:P3({color:col('#3a0004'),emissive:col('#ff1020'),roughness:.12,clearcoat:1}),
+ head:P3({color:col('#39424e'),emissive:0xffffff,roughness:.2,metalness:.35,clearcoat:1,envMapIntensity:.6}),tail:P3({color:col('#3a0004'),emissive:col('#ff1020'),roughness:.12,clearcoat:1}),
  liner:P1({color:col('#1a1b1e'),roughness:.95,side:THREE.BackSide}),none:new THREE.MeshBasicMaterial({visible:false}),
  tire:P1({roughness:.85,side:THREE.DoubleSide}),rim:P3({side:THREE.DoubleSide}),steel:P1({color:col('#8a8f96'),metalness:.9,roughness:.35}),
  caliper:P1({roughness:.4,metalness:.2}),chrome:P1({color:col('#e6e8ec'),metalness:1,roughness:.08,side:THREE.DoubleSide}),
@@ -627,7 +628,7 @@ function halfRing(c){const o=[];for(let k=0;k<9;k++){const p0=c[Math.max(0,k-1)]
 function ringOf(t){const h=halfRing(P.sec(t)),r=h.slice();for(let m=NH-1;m>=1;m--)r.push([h[m][0],-h[m][1]]);return r}
 function bodyGeo(){
  const L=T.L,W=T.W,e=P.Ra/L,edges=[T.fa-e,T.fa+e,T.ra-e,T.ra+e];let ts=[];for(let i=0;i<=120;i++)ts.push(i/120);
- ts.push(P.ws[0],P.ws[1],P.rw[0],P.rw[1],P.sg[0],P.sg[1],.012,.07,.945,.99);for(const p of T.pil)ts.push(p-.009,p+.009);
+ ts.push(P.ws[0],P.ws[1],P.rw[0],P.rw[1],P.sg[0],P.sg[1],P.d0,.012,.07,.945,.99);for(const p of T.pil)ts.push(p-.009,p+.009);
  ts.sort((a,b)=>a-b);ts=ts.filter((t,i)=>t>=0&&t<=1&&(i===0||t-ts[i-1]>3e-4)&&!edges.some(q=>Math.abs(q-t)<2.5e-3));
  const sts=ts.map(t=>({t,x:P.X(t)}));for(const q of edges)sts.push({t:q-1e-4,x:P.X(q)},{t:q+1e-4,x:P.X(q),wall:1});
  sts.sort((a,b)=>a.t-b.t);
@@ -639,7 +640,7 @@ function bodyGeo(){
  const cls=(tm,k,c,m)=>{if(k<=1)return 2;if(c)return 0;
   if(k<=5){if(m>=10&&m<=14&&tm>.012&&tm<.07)return 5;if(m>=12&&m<=14&&tm>.945&&tm<.99)return 6;return 0}
   if(k===6){if(!inR(tm,P.sg))return 0;if(T.panel&&tm>T.pil[0]+.009)return 0;return T.pil.some(p=>Math.abs(tm-p)<.009)?4:1}
-  if(inR(tm,P.ws)||inR(tm,P.rw))return 1;if(tm>=P.ws[1]&&tm<=P.rw[0])return 3;return 0};
+  if(inR(tm,P.ws)||inR(tm,P.rw))return m===7*NS?0:1;if(tm>=P.ws[1]&&tm<=P.rw[0])return 3;return 0};
  const n=rings.length;
  for(let i=0;i<n-1;i++){const tm=(rings[i].t+rings[i+1].t)/2,c=rings[i].cap||rings[i+1].cap;
   for(let j=0;j<NR;j++){const m=j<NH?j:NR-1-j,k=Math.floor(m/NS),a=i*NR+j,b=i*NR+(j+1)%NR,cc=(i+1)*NR+(j+1)%NR,d=(i+1)*NR+j;
@@ -697,13 +698,13 @@ function buildExtras(g){
  const seamTop=t=>{const h=halfRing(P.sec(t)),x=X(t),pos=[],idx=[];for(const q of[-1,1]){const b=pos.length/3;let n=0;for(let m=6*NS;m<=NH;m++,n++){pos.push(x-.005,h[m][0]+.004,q*h[m][1],x+.005,h[m][0]+.004,q*h[m][1]);if(n)idx.push(b+n*2-2,b+n*2-1,b+n*2,b+n*2-1,b+n*2+1,b+n*2)}}
   const ge=new THREE.BufferGeometry();ge.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));ge.setIndex(idx);ge.computeVertexNormals();g.add(new THREE.Mesh(ge,M.under))};
  seamTop(P.ws[0]-.012);if(P.rw[1]<.9)seamTop(P.rw[1]+.012);seam(g,.09);seam(g,.925);
- {const tw=P.ws[0]+.022;for(const q of[-1,1]){const wp=mk(new THREE.BoxGeometry(.018,.012,hw(tw)*.72),M.under,X(tw),top(tw)+.012,q*hw(tw)*.4,g);wp.rotation.y=q*.12}
+ {const tw=P.ws[0]+.03;for(const q of[-1,1]){const wp=mk(new THREE.BoxGeometry(.016,.012,hw(tw)*.5),M.under,X(tw),top(tw)+.01,q*hw(tw)*.28,g);wp.rotation.y=q*.08}
   const tb=P.rw[0]+.006;mk(new THREE.BoxGeometry(.014,.014,.32),M.tled,X(tb),top(tb)+.004,0,g)}
- const tm=P.sg[0]+.015;for(const s of[-1,1])mk(rbox(.09,.1,.2,.035),'paint',X(tm)+.02,belt(tm)+.09,s*(P.hs(tm)*.93+.1),g,1);for(const q of[-1,1])mk(new THREE.BoxGeometry(.012,.014,.11),M.ind,X(tm)+.07,belt(tm)+.088,q*(P.hs(tm)*.93+.1),g);
+ const tm=P.d0+.015;for(const s of[-1,1])mk(rbox(.09,.1,.2,.035),'paint',X(tm)+.02,belt(tm)+.09,s*(P.hs(tm)*.93+.1),g,1);for(const q of[-1,1])mk(new THREE.BoxGeometry(.012,.014,.11),M.ind,X(tm)+.07,belt(tm)+.088,q*(P.hs(tm)*.93+.1),g);
  if(S.roofbox){const t=(P.ws[1]+P.rw[0])/2,y=top(t);mk(rbox(Math.min(1.7,(P.rw[0]-P.ws[1])*L*.9),.3,.82,.12),M.trim,X(t),y+.24,0,g,1);for(const d of[-.4,.4])mk(new THREE.BoxGeometry(.05,.04,hw(t)*1.5),M.steel,X(t)+d,y+.07,0,g,1)}
  if(S.ledbar){const t=P.ws[1]+.012,y=top(t);mk(rbox(.07,.07,W*.62,.02),M.trim,X(t),y+.05,0,g,1);mk(new THREE.BoxGeometry(.01,.045,W*.58),M.head,X(t)+.037,y+.05,0,g)}
- if(S.num.trim()){const t=(P.sg[0]+T.pil[0])/2;for(const q of[-1,1]){const pn=mk(new THREE.PlaneGeometry(.52,.52),M.num,X(t),(belt(t)+yU(t))/2+.03,q*(P.hs(t)+.012),g);if(q<0)pn.rotation.y=Math.PI}}
- const drs=[P.sg[0]+.004,...T.pil.filter(p=>p>P.sg[0]+.05&&p<P.sg[1]-.01)].slice(0,T.seats>=4?3:2);
+ if(S.num.trim()){const t=(P.d0+T.pil[0])/2;for(const q of[-1,1]){const pn=mk(new THREE.PlaneGeometry(.52,.52),M.num,X(t),(belt(t)+yU(t))/2+.03,q*(P.hs(t)+.012),g);if(q<0)pn.rotation.y=Math.PI}}
+ const drs=[P.d0+.004,...T.pil.filter(p=>p>P.d0+.05&&p<P.sg[1]-.01)].slice(0,T.seats>=4?3:2);
  drs.forEach((t,i)=>{seam(g,t);if(i){const th=t-.045;for(const q of[-1,1])mk(rbox(.14,.024,.022,.009),M.chrome,X(th),belt(th)-.085,q*(P.hs(th)*.995+.008),g)}});
  for(const ta of[T.fa,T.ra])if(T.R+P.Ra<belt(ta)-.03)for(const q of[-1,1]){const lip=mk(new THREE.TorusGeometry(P.Ra+.004,.021,8,30,Math.PI),T.gc>=.22?M.trim:'paint',X(ta),T.R,q*(P.hs(ta)*.985),g,1);lip.scale.z=1.6}
  {const tf=P.rw[0]-.03;if(P.cab(tf)>.2)mk(rbox(.17,.05,.03,.012),'paint',X(tf),top(tf)+.015,0,g)}
@@ -794,7 +795,7 @@ function applyMats(){
  if(bodyMesh){bodyMesh.material[0]=bodyMat;bodyMesh.material[3]=S.roof==='body'?bodyMat:S.roof==='glass'?M.glass:M.roof;linerMesh.material[3]=S.roof==='glass'?M.none:M.liner}
  M.roof.color.copy(col(S.roof==='black'?'#08090b':S.paint2));M.roof.metalness=S.roof==='black'?0:f[0];M.roof.roughness=S.roof==='black'?.2:f[1];M.roof.clearcoat=1;
  M.glass.opacity=.22+S.tint*.74;
- const lit=S.lights?1:0;M.head.emissive.copy(col(S.lamp));M.head.emissiveIntensity=.08+lit*.55;M.tail.emissiveIntensity=.2+lit*.6;M.drl.emissive.copy(col(S.lamp));M.drl.emissiveIntensity=.5+lit*4;M.tled.emissiveIntensity=.6+lit*3.5;
+ const lit=S.lights?1:0;M.head.emissive.copy(col(S.lamp));M.head.emissiveIntensity=.02+lit*.45;M.tail.emissiveIntensity=.2+lit*.6;M.drl.emissive.copy(col(S.lamp));M.drl.emissiveIntensity=.5+lit*4;M.tled.emissiveIntensity=.6+lit*3.5;
  {const ch=S.trimc==='chrom';M.wtrim.color.copy(col(ch?'#e6e8ec':'#08090b'));M.wtrim.metalness=ch?1:.2;M.wtrim.roughness=ch?.1:.35}
  if(spot){spot.color.copy(col(S.lamp));spot.intensity=lit*1.1}
  const rf=S.rimFin;M.rim.color.copy(col(S.rimCol));M.rim.metalness=rf==='matt'?.5:rf==='chrom'?1:.85;M.rim.roughness=rf==='matt'?.65:rf==='chrom'?.05:.25;M.rim.clearcoat=rf==='gloss'?1:0;

@@ -2,6 +2,15 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 4.4 – 12. November 2026
+
+**Karosserie-Fehler an der Kabine behoben (bei allen Modellen)**
+- Zwischen Frontscheibe und Seitenfenster sitzt jetzt eine A-Säule; vorher lief das Glas ohne Säule um die Ecke
+- Das Seitenfenster läuft vorn entlang der Frontscheibe und hinten entlang der Heckscheibe spitz zu, statt mit einer senkrechten Kante abzubrechen
+- Türfuge, Außenspiegel und Startnummer sitzen an der Tür statt in der Fensterecke
+- Die Scheibenwischer sind kürzer und ragen nicht mehr über die Scheibe hinaus
+- Die Scheinwerfer sind dunkle Gläser mit Leuchtband statt weißer Flächen
+
 ## Version 4.3 – 12. November 2026
 
 **Kategorien und viel mehr Modelle**
