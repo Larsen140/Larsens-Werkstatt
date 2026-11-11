@@ -2,6 +2,20 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 4.1 – 11. November 2026
+
+**Kennzeichen**
+- Sitzt jetzt sichtbar vor Stoßfänger und Kühlergrill, mit schwarzem Halter (vorher steckte es im Stoßfänger)
+- Der Editor steht ganz oben bei „Tuning“
+- Beim Bearbeiten schwenkt die Kamera nach vorn aufs Kennzeichen
+
+**Warnblinker**
+- Kleine orange Blinker in den Scheinwerfern, den Rückleuchten und an den Außenspiegeln statt großer Lichtflecken
+- Ruhigerer Takt
+
+**Sonst**
+- Der Lichtfleck der Scheinwerfer auf dem Boden ist dezenter
+
 ## Version 4.0 – 11. November 2026
 
 **Kennzeichen-Editor** (unter „Tuning“)
