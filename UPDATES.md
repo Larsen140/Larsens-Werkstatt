@@ -2,6 +2,25 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 3.7 – 11. November 2026
+
+**Innenraum**
+- Drehzahlmesser und Tacho laufen mit, wenn du im Innenraum Gas gibst; dazu Ganganzeige und PS
+- Neu einstellbar: Lenkrad-Form und -Farbe, Zierleiste (Carbon, Aluminium, Holz, Klavierlack), Bildschirm-Größe, Schalthebel, Gurtfarbe, Türen und Dachhimmel, Teppich
+- Mittelbildschirm mit eigener Anzeige
+
+**Sound**
+- Vollerer Motorklang: jede Motorart hat ein eigenes Klangbild aus ihren Zündfolgen
+- Anlasser dreht hörbar durch, der Leerlauf schwankt leicht
+- Hall in der Werkstatt, trockener Klang im Freien
+- Die Auspuffanlage färbt den Ton stärker
+
+**Realistischere Autos**
+- Tagfahrlicht-Leiste und LED-Rückleuchten statt weißer Flächen
+- Zierleisten an den Fenstern in Chrom oder Schwarz
+- Fugen an Motorhaube, Kofferraum und Stoßfängern
+- Scheibenwischer, dritte Bremsleuchte, Radschrauben, polierter Felgenrand
+
 ## Version 3.6 – 11. November 2026
 
 - Der Knopf im Fotostudio heißt jetzt „In Galerie speichern“
