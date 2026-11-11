@@ -36,7 +36,8 @@ Danach startet sie vom Homescreen im Vollbild und läuft auch ohne Internet. Am 
 
 ## Dateien
 
-- `index.html` – die komplette App in einer Datei
+- `index.html` – die fertige App, wie GitHub Pages sie ausliefert
+- `app.html` – die App-Quelle; `./build.sh` baut daraus `index.html`
 - `UPDATES.md` – Liste aller Updates
 - `manifest.webmanifest`, `sw.js` und die Symbole – machen die Seite zur installierbaren App
 

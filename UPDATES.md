@@ -2,6 +2,28 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 3.2 – 11. November 2026
+
+**Flüssiger**
+- Die Bildschärfe passt sich automatisch an das Gerät an (neue Grafik-Einstellung „Automatisch“)
+- Schatten werden nur neu berechnet, wenn sich am Auto etwas bewegt
+- Steht alles still, ruht die Grafik und schont den Akku
+- Schnellerer Start mit Ladebild, Effekte werden vorab vorbereitet
+
+**Vollbild**
+- Die App füllt vom Homescreen aus den ganzen Bildschirm, ohne Balken unten
+- Titel und Knöpfe halten Abstand zu Notch und Home-Leiste
+- Auf Android startet sie ohne Statusleiste
+
+**Fehler behoben**
+- iPhone zoomte beim Tippen in Textfelder hinein
+- Motor lief weiter, wenn die App im Hintergrund war
+- Knopfleiste überdeckte auf dem Handy die Leistungsdaten
+- Schnelles Umschalten im Bild-Dialog konnte eine alte Vorschau anzeigen
+- Die Installations-Anleitung konnte auf älteren iPhones einen Fehler auslösen
+- Die App lud hinter der Installations-Anleitung unnötig die ganze 3D-Szene
+- Grafik erholt sich jetzt, wenn das Handy sie im Hintergrund abgeschaltet hat
+
 ## Version 3.1 – 11. November 2026
 
 - Die App lässt sich zum Homescreen hinzufügen und startet dann im Vollbild
