@@ -1,5 +1,5 @@
 // Larsens Autowerkstatt: macht die App offline nutzbar.
-const CACHE = 'werkstatt-v3';
+const CACHE = 'werkstatt-v4';
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {
@@ -19,7 +19,7 @@ self.addEventListener('fetch', (e) => {
   if (sameOrigin) {
     // Eigene Dateien: erst Netz (damit Updates ankommen), sonst aus dem Speicher.
     e.respondWith(
-      fetch(req).then((res) => {
+      fetch(req.url, { cache: 'no-store' }).then((res) => {
         if (res.ok) {
           const copy = res.clone();
           caches.open(CACHE).then((c) => c.put(req, copy));

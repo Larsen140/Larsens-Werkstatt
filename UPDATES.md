@@ -2,6 +2,13 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 3.4 – 11. November 2026
+
+- Größere, klarere Knöpfe mit Symbolen; die Motor-Leiste füllt auf dem Handy die ganze Breite
+- Das Menü „Ansicht“ zeigt mit einem Punkt, was eingeschaltet ist
+- Die App prüft beim Öffnen selbst, ob es eine neue Version gibt, und lädt sie
+- Die installierte Version steht im Ladebild und unter „Optionen“
+
 ## Version 3.3 – 11. November 2026
 
 **Übersichtlicher**

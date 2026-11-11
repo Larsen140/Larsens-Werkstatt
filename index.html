@@ -45,7 +45,7 @@ body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 #c{display:block;width:100%;height:100%;touch-action:none}
 #panel{width:390px;flex:none;display:flex;flex-direction:column;background:var(--panel);border-left:1px solid var(--line);min-height:0}
 #tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding:10px max(12px,env(safe-area-inset-right,0px)) 10px 12px;border-bottom:1px solid var(--line)}
-#tabs button{min-width:0;background:var(--raise);border:1px solid var(--line);border-radius:7px;padding:10px 1px;font:700 13.5px/1 var(--display);letter-spacing:.02em;text-transform:uppercase;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#tabs button{min-width:0;background:var(--raise);border:1px solid var(--line);border-radius:7px;padding:10px 1px;font:700 13px/1 var(--display);letter-spacing:0;text-transform:uppercase;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 #pane{flex:1;overflow-y:auto;padding-block:12px calc(24px + var(--sb,0px));padding-left:12px;padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:12px}
 .grp{display:flex;flex-direction:column;gap:9px}
@@ -80,16 +80,22 @@ body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 #hTitle span{font:700 12px/1 var(--display);letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-shadow:0 1px 6px #000c;margin-bottom:4px}
 #hTitle h1{margin:0;font:800 30px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;text-shadow:0 1px 10px #000a}
 #hTitle p{white-space:nowrap;margin:3px 0 0;font-size:13px;font-variant-numeric:tabular-nums;color:#dfe6ee;text-shadow:0 1px 6px #000c}
-#hView{top:calc(12px + var(--st,0px));right:max(12px,env(safe-area-inset-right,0px));flex-direction:column;align-items:flex-end}
-#more{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+#hView{top:calc(12px + var(--st,0px));right:max(12px,env(safe-area-inset-right,0px));flex-direction:column;align-items:stretch}
+#more{display:flex;flex-direction:column;gap:6px;align-items:stretch}
+#more .hb{justify-content:flex-start}
 #bMore{display:none}
 #hSound{bottom:12px;left:max(16px,env(safe-area-inset-left,0px));right:12px;align-items:center;flex-wrap:wrap}
-.hb{background:#0d1117cc;border:1px solid #ffffff2e;border-radius:6px;padding:7px 11px;font:700 14px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);user-select:none;-webkit-user-select:none;touch-action:manipulation}
-.hb[aria-pressed="true"]{background:var(--fg);color:#0b0e13;border-color:var(--fg)}
+.hb{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;background:#10151cf2;border:1.5px solid #ffffff40;border-radius:11px;padding:0 14px;font:700 15px/1 var(--display);letter-spacing:.07em;text-transform:uppercase;color:#fff;white-space:nowrap;box-shadow:0 2px 10px #00000066;user-select:none;-webkit-user-select:none}
+.hb em{font-style:normal}
+.hb svg{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.hb:active{transform:scale(.97)}
+.hb[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+#more .hb::before{content:"";width:8px;height:8px;border-radius:50%;background:#ffffff40;flex:none}
+#more .hb[aria-pressed="true"]::before{background:var(--accent)}
 .hb.go{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .hb.on{background:var(--stop);border-color:var(--stop);color:#fff}
-#gas{padding:11px 18px}
-#gas:active{transform:scale(.96)}
+#gas{min-height:48px;padding:0 22px;font-size:17px}
+@media (prefers-reduced-motion:reduce){.hb:active{transform:none}}
 #rpm{flex:1;min-width:90px;max-width:260px;display:flex;flex-direction:column;gap:3px;font-size:12px;font-variant-numeric:tabular-nums;color:#dfe6ee;text-shadow:0 1px 4px #000}
 #rpm i{display:block;height:5px;border-radius:3px;background:#ffffff26;overflow:hidden}
 #rpm i b{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ice),var(--accent) 70%,var(--stop))}
@@ -121,31 +127,34 @@ body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
   #pane{padding-left:max(12px,env(safe-area-inset-left,0px))}
   #hTitle h1{font-size:22px}
   #hTitle p{font-size:12px}
-  .hb{padding:6px 9px;font-size:13px}
+  .hb{min-height:44px;font-size:14px;padding:0 12px}
   #bMore{display:block}
   #more{display:none}
   #hView.open #more{display:flex}
-  #hTitle{right:150px}
+  #hTitle{right:132px}
+  #bShot em{display:none}
   #hTitle span{font-size:11px;letter-spacing:.14em}
-  #hSound{gap:5px;right:max(12px,env(safe-area-inset-right,0px))}
-  #gas{padding:9px 16px}
+  #hSound{display:grid;grid-template-columns:1.15fr 1.35fr 1fr 1fr;gap:6px;right:max(12px,env(safe-area-inset-right,0px))}
+  #hSound .hb{padding:0 6px;min-width:0}
+  #rpm{grid-column:1/-1;order:-1;max-width:none}
+  #gas{min-height:48px;padding:0 6px;font-size:16px}
   #shotBox{flex-direction:column}
   #shotForm{width:auto}
   #shotPrev img{max-height:38vh}
 }
-@media (prefers-reduced-motion:reduce){#gas:active{transform:none}}
+
 </style>
 
 </head>
 <body>
-<div id="boot"><b>Larsens Autowerkstatt</b><span>Werkstatt wird aufgeschlossen …</span><i></i></div>
+<div id="boot"><b>Larsens Autowerkstatt</b><span>Werkstatt wird aufgeschlossen …</span><i></i><span id="bootV"></span></div>
 <div id="app">
   <div id="stage">
     <canvas id="c" aria-label="3D-Ansicht deines Autos. Ziehen zum Drehen, Zoomen mit zwei Fingern oder Mausrad."></canvas>
     <div class="hud" id="hTitle"><span>Larsens Autowerkstatt</span><h1 id="hName">Sportcoupé</h1><p id="hStats"></p></div>
     <div class="hud" id="hView">
-      <button class="hb go" id="bShot">Bild erstellen</button>
-      <button class="hb" id="bMore" aria-expanded="false" aria-controls="more">Ansicht</button>
+      <button class="hb go" id="bShot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Bild<em> erstellen</em></span></button>
+      <button class="hb" id="bMore" aria-expanded="false" aria-controls="more"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span>Ansicht</span></button>
       <div id="more">
         <button class="hb" id="bIn" aria-pressed="false">Innenraum</button>
         <button class="hb" id="bLift" aria-pressed="false">Hebebühne</button>
@@ -154,10 +163,10 @@ body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
       </div>
     </div>
     <div class="hud" id="hSound">
-      <button class="hb" id="bStart">Motor starten</button>
+      <button class="hb" id="bStart" aria-label="Motor starten"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v9"/><path d="M6.3 7a8 8 0 1 0 11.4 0"/></svg><span>Start</span></button>
       <button class="hb go" id="gas">Gas</button>
-      <button class="hb" id="bHorn">Hupe</button>
-      <button class="hb" id="bNitro">Nitro</button>
+      <button class="hb" id="bHorn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l6 4V6l-6 4z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg><span>Hupe</span></button>
+      <button class="hb" id="bNitro"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/></svg><span>Nitro</span></button>
       <div id="rpm" hidden><span id="rpmT">Motor aus</span><i><b id="rpmB"></b></i></div>
     </div>
   </div>
@@ -206,9 +215,14 @@ body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[n,v]of Object.entries(a)){if(n==='class')e.className=v;else if(n==='text')e.textContent=v;else if(n==='html')e.innerHTML=v;else if(n.startsWith('on'))e.addEventListener(n.slice(2),v);else e.setAttribute(n,v)}k.forEach(c=>c&&e.append(c));return e};
 /* Homescreen-Pflicht: nur in der GitHub-Version (dort gibt es ein Manifest), nur auf Handy und Tablet */
+const VERSION='3.4';
+{const bv=document.getElementById('bootV');if(bv)bv.textContent='Version '+VERSION}
 (function(){const de=document.documentElement;if(!de.classList.contains('pwa'))return;
  const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),alone=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
  const fit=()=>{let h=window.innerHeight;if(ios&&alone){const a=screen.width,b=screen.height,port=window.innerHeight>=window.innerWidth;h=Math.max(h,port?Math.max(a,b):Math.min(a,b))}de.style.setProperty('--H',h+'px')};
+ const chk=()=>{fetch('version.txt?'+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.text():'').then(t=>{t=t.trim();if(!t||t===VERSION)return;let d='';try{d=sessionStorage.getItem('lw-upd')}catch(e){}if(d===t)return;try{sessionStorage.setItem('lw-upd',t)}catch(e){}
+  const go=()=>location.reload();try{navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).then(go,go)}catch(e){go()}}).catch(()=>{})};
+ chk();document.addEventListener('visibilitychange',()=>{if(!document.hidden){fit();chk()}});
  fit();window.addEventListener('resize',fit);window.addEventListener('orientationchange',()=>{setTimeout(fit,60);setTimeout(fit,400)});
 })();
 let gated=false;
@@ -290,6 +304,7 @@ const SCENES={
 const FMT={pfp:{n:'Profilbild',w:1080,h:1080},banner:{n:'Banner',w:1500,h:500},iphone:{n:'iPhone',w:1290,h:2796},handy:{n:'Android-Handy',w:1440,h:3200},ipad:{n:'iPad / Tablet',w:2048,h:2732},pc:{n:'PC Full HD',w:1920,h:1080},pc4k:{n:'PC 4K',w:3840,h:2160}};
 
 const UPDATES=[
+ ['Version 3.4','Größere, klarere Knöpfe mit Symbolen. Die App holt sich neue Versionen jetzt selbst, sobald du sie öffnest. Die installierte Version steht hier und im Ladebild.'],
  ['Version 3.3','Aufgeräumte Bedienung: alle Bereiche auf einen Blick als Kacheln, Einstellungen in klaren Karten, eigener Bereich „Garage“, Ansicht-Knöpfe in einem Menü, Drehzahl nur bei laufendem Motor. Vollbild auf dem iPhone ohne Balken unten.'],
  ['Version 3.2','Flüssiger: Die Schärfe passt sich automatisch an dein Gerät an, Schatten werden nur bei Bedarf neu berechnet und im Stillstand ruht die Grafik. Schnellerer Start mit Ladebild. Echtes Vollbild ohne Balken unten. Behoben: Zoom beim Tippen in Textfelder, Motor lief im Hintergrund weiter, überlappende Bild-Vorschauen.'],
  ['Version 3.1','Die GitHub-Version ist jetzt eine richtige App: Auf Handy und Tablet fügst du sie zum Homescreen hinzu, sie startet im Vollbild und läuft danach auch ohne Internet.'],
@@ -711,7 +726,7 @@ function engineStart(){if(!audioInit())return;const e=engine();
  else{burst('bandpass',2400,.08,.5);A.rpm=0}
  A.on=true;uiSound()}
 function engineStop(){A.on=false;A.thr=0;uiSound()}
-function uiSound(){const b=$('#bStart');b.textContent=A.on?'Motor aus':'Motor starten';b.classList.toggle('on',A.on)}
+function uiSound(){const b=$('#bStart');b.querySelector('span').textContent=A.on?'Stopp':'Start';b.setAttribute('aria-label',A.on?'Motor ausschalten':'Motor starten');b.classList.toggle('on',A.on)}
 function setThr(v){if(v&&!A.on)engineStart();const e=engine(),n=(A.rpm-e.idle)/(e.max-e.idle);
  if(!v&&A.thr&&A.on&&A.ctx){if(e.turbo&&n>.45)burst('highpass',2600,.22,.38);if(S.exhaust!=='serie'&&e.id!=='ev'&&n>.55){const k=S.exhaust==='renn'?7:4;for(let i=0;i<k;i++)burst('lowpass',700+Math.random()*600,.5,.05,.15+Math.random()*.7);flameT=.9}}
  A.thr=v}
@@ -836,7 +851,7 @@ const PANES={
   grp('Kamera',el('div',{class:'chips'},toggle('show','Showmodus',applyMats)),slider('spinSpeed','Drehgeschwindigkeit',.2,3,.1,v=>v.toFixed(1).replace('.',',')+'×',applyMats));
   grp('Ton',slider('vol','Lautstärke',0,1,.05,v=>Math.round(v*100)+' %',()=>{if(A.master)A.master.gain.value=S.vol}));
   grp('Farbe der Bedienung',swatch('ui',[['#ffb020','Bernstein'],['#7cd4ff','Eisblau'],['#b6e600','Limette'],['#ff6b5a','Koralle'],['#ff7ad9','Pink'],['#f4f5f7','Weiß']],applyUi));
-  const ul=el('div',{class:'stack'});for(const[v,t]of UPDATES)ul.append(el('p',{class:'note',html:'<b style="color:var(--fg)">'+v+'</b> '+t}));grp('Updates',ul);
+  const ul=el('div',{class:'stack'});for(const[v,t]of UPDATES)ul.append(el('p',{class:'note',html:'<b style="color:var(--fg)">'+v+'</b> '+t}));grp('Updates · installiert ist Version '+VERSION,ul);
   grp('Über die Autos',el('p',{class:'note',text:'Die Karosserien sind eigene, markenfreie Formen. Aus '+TYPES.length+' Grundtypen, freier Farbwahl und allen Teilen entstehen Millionen Kombinationen.'}));
   grp('Speicher',el('p',{class:'note',text:'Dein Auto wird automatisch auf diesem Gerät gemerkt.'}),el('button',{class:'wide',text:'Alles zurücksetzen',onclick:()=>{Object.assign(S,DEF);save();outPos=null;inside=false;applyGfx();applyUi();buildCar(1);applyScene();setView();show()}}));
  }
