@@ -12,6 +12,17 @@ https://larsen140.github.io/Larsens-Werkstatt/
 2. Bei **Source** „Deploy from a branch“ wählen, Branch **main**, Ordner **/ (root)**.
 3. Speichern. Nach ein bis zwei Minuten ist die App unter dem Link oben erreichbar.
 
+## Windows-Programm
+
+[`windows/Larsens-Autowerkstatt.exe`](windows/Larsens-Autowerkstatt.exe) öffnet die Werkstatt am PC in einem eigenen Fenster, ohne Adressleiste.
+
+- **Herunterladen:** Datei anklicken, dann oben rechts „Download raw file“.
+- **Updates:** Das Programm lädt immer die Online-Version von GitHub. Neue Versionen kommen also von selbst an, die Datei muss nie neu geladen werden.
+- **Voraussetzung:** Internet beim ersten Start sowie Microsoft Edge (auf Windows 10 und 11 vorinstalliert) oder Google Chrome. Danach läuft die App auch ohne Internet.
+- **Warnung beim ersten Start:** Windows zeigt „Der Computer wurde durch Windows geschützt“, weil das Programm nicht signiert ist. Auf „Weitere Informationen“ und dann „Trotzdem ausführen“ klicken.
+
+Der Quelltext liegt daneben (`windows/starter.c`); gebaut wird mit dem Befehl, der oben in der Datei steht.
+
 ## Werbevideo
 
 [`video/werbung.mp4`](video/werbung.mp4) – 34 Sekunden im Hochformat (1080 × 1920), direkt aus der App gefilmt.

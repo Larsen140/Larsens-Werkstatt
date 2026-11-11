@@ -2,6 +2,11 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Windows-Programm – 11. November 2026
+
+- Neu: `windows/Larsens-Autowerkstatt.exe` öffnet die Werkstatt am PC in einem eigenen Fenster
+- Das Programm lädt immer die Online-Version von GitHub, Updates kommen von selbst an
+
 ## Version 4.1 – 11. November 2026
 
 **Kennzeichen**
