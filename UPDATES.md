@@ -2,6 +2,27 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 4.0 – 11. November 2026
+
+**Kennzeichen-Editor** (unter „Tuning“)
+- Vorschau, die jede Änderung sofort zeigt
+- Eigener Text, eigenes Kürzel im blauen Feld
+- 5 Stile: weiß mit blauem Feld, gelb, schwarz, kurz und hoch, eigene Farben für Schild und Schrift
+- 3 Schriften, Rand an oder aus
+- Anzeige vorne und hinten, nur hinten oder gar nicht
+
+**Effekte und Animationen**
+- Funken an den Rädern beim Wechsel von Felgen und Reifen, am Auto beim Tuning
+- Lacknebel in der neuen Farbe und weicher Farbübergang beim Lackieren
+- Abgaswölkchen beim Motorstart und im Leerlauf
+- Blaues Flimmern am Bildrand bei Nitro
+- Glänzenderer Werkstattboden
+
+**Bedienung**
+- Bereiche und Karten blenden weich ein, gewählte Knöpfe federn kurz
+- Neue Schieberegler mit großem Griff
+- Kurze Hinweise, zum Beispiel „In der Garage gespeichert“
+
 ## Version 3.9 – 11. November 2026
 
 - Leerlauf und leichtes Gas kommen jetzt von Mikrofon-Aufnahmen echter Autos: ein Vierzylinder am Auspuff, ein Sechszylinder und ein amerikanischer V8
