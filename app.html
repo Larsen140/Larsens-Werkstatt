@@ -212,7 +212,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[n,v]of Object.entries(a)){if(n==='class')e.className=v;else if(n==='text')e.textContent=v;else if(n==='html')e.innerHTML=v;else if(n.startsWith('on'))e.addEventListener(n.slice(2),v);else e.setAttribute(n,v)}k.forEach(c=>c&&e.append(c));return e};
 /* Homescreen-Pflicht: nur in der GitHub-Version (dort gibt es ein Manifest), nur auf Handy und Tablet */
-const VERSION='4.1';
+const VERSION='4.2';
 {const bv=document.getElementById('bootV');if(bv)bv.textContent='Version '+VERSION}
 (function(){const de=document.documentElement;if(!de.classList.contains('pwa'))return;
  const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),alone=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
@@ -301,6 +301,7 @@ const SCENES={
 const FMT={pfp:{n:'Profilbild',w:1080,h:1080},banner:{n:'Banner',w:1500,h:500},story:{n:'Story',w:1080,h:1920},iphone:{n:'iPhone',w:1290,h:2796},handy:{n:'Android-Handy',w:1440,h:3200},ipad:{n:'iPad / Tablet',w:2048,h:2732},pc:{n:'PC Full HD',w:1920,h:1080},pc4k:{n:'PC 4K',w:3840,h:2160}};
 
 const UPDATES=[
+ ['Version 4.2','Innenraum: Dein Blick bleibt, wohin du schaust, wenn du etwas änderst. Vorher drehte sich der Kopf bei jeder Änderung zurück nach vorn.'],
  ['Version 4.1','Kennzeichen sitzt jetzt sichtbar vor Stoßfänger und Kühlergrill, mit Halter; der Editor steht ganz oben bei „Tuning“ und die Kamera schwenkt beim Bearbeiten nach vorn. Warnblinker neu: kleine Blinker in den Leuchten und an den Spiegeln statt großer Lichtflecken.'],
  ['Version 4.0','Kennzeichen-Editor mit Vorschau: Text, Kürzel, 5 Stile, Schrift, eigene Farben, vorne/hinten. Neue Effekte: Funken beim Schrauben, Lacknebel und weicher Farbübergang beim Lackieren, Abgaswölkchen im Leerlauf und beim Start, blaues Flimmern bei Nitro. Bedienung mit Animationen, neuen Reglern und kurzen Hinweisen; glänzenderer Werkstattboden.'],
  ['Version 3.9','Echte Aufnahmen von der Straße: Leerlauf und leichtes Gas kommen von echten Autos (Vierzylinder, Sechszylinder, V8), die Hupe ist eine echte Autohupe zum Gedrückthalten.'],
@@ -742,10 +743,10 @@ function stats(){
 }
 
 /* ---------- Kamera ---------- */
-let inside=false,outPos=null;
+let inside=false,outPos=null,headKeep=false;
 function fitDist(asp,fov){const r=T.L*.58,vf=fov*Math.PI/360,hf=Math.atan(Math.tan(vf)*asp);return r/Math.sin(Math.min(vf,hf))}
 function setView(){
- if(inside){camera.fov=68;const d=new THREE.Vector3(1,-.03,.12).normalize(),e=new THREE.Vector3(eye.x,eye.y+bodyG.position.y+liftY,eye.z);
+ if(inside){camera.fov=68;const d=headKeep?controls.target.clone().sub(camera.position).normalize():new THREE.Vector3(1,-.03,.12).normalize();headKeep=true;const e=new THREE.Vector3(eye.x,eye.y+bodyG.position.y+liftY,eye.z);
   controls.target.copy(e).addScaledVector(d,.3);camera.position.copy(e);controls.minDistance=controls.maxDistance=.3;controls.minPolarAngle=.9;controls.maxPolarAngle=2.2;controls.rotateSpeed=-.35}
  else{camera.fov=35;const dir=outPos?outPos.clone().normalize():new THREE.Vector3(.7,.22,.66).normalize();const tgt=new THREE.Vector3(0,P.top(.55)*.5,0);
   controls.target.copy(tgt);camera.position.copy(tgt).addScaledVector(dir,fitDist(camera.aspect,35)*(camera.aspect<1.3?1.2:1.02));controls.minDistance=T.L*.62;controls.maxDistance=16;controls.minPolarAngle=.15;controls.maxPolarAngle=Math.PI/2-.04;controls.rotateSpeed=1}
@@ -980,7 +981,7 @@ function randomize(){const r=a=>a[Math.floor(Math.random()*a.length)];
  Object.assign(S,{type:Math.floor(Math.random()*TYPES.length),paint:r(PAINTS)[0],paint2:r(PAINTS)[0],finish:r(FIN)[0],rim:r(RIMS)[0],rimCol:r(RIMCOL),rimIn:16+Math.floor(Math.random()*8),
   spoiler:r(['none','none','lip','wing','gt']),stripes:r(['none','none','doppel','einzel']),seatCol:r(SEATCOL),engine:r(ENG).id,caliper:r(['#ffc400','#c1121f','#1d6fe0','#39c14a']),roof:r(['body','body','black','glass']),glow:Math.random()<.3,glowCol:r(NEON)});
  save();outPos=inside?outPos:camera.position.clone().sub(controls.target);buildCar(1);setView();show()}
-function toggleInside(){if(!inside)outPos=camera.position.clone().sub(controls.target);inside=!inside;setView()}
+function toggleInside(){if(!inside)outPos=camera.position.clone().sub(controls.target);inside=!inside;headKeep=false;setView()}
 
 /* ---------- HUD ---------- */
 const hView=$('#hView'),bMore=$('#bMore');bMore.onclick=()=>{const o=hView.classList.toggle('open');bMore.setAttribute('aria-expanded',o);bMore.setAttribute('aria-pressed',o)};canvas.addEventListener('pointerdown',()=>{hView.classList.remove('open');bMore.setAttribute('aria-expanded','false');bMore.setAttribute('aria-pressed','false')});

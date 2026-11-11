@@ -2,6 +2,11 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 4.2 – 11. November 2026
+
+- Innenraum: Der Blick bleibt dort, wohin du schaust, wenn du etwas änderst (Sitze, Lenkrad, Farben, Bildschirm …). Vorher drehte sich der Kopf bei jeder Änderung zurück nach vorn.
+- Nur beim Einsteigen schaut die Kamera wie bisher nach vorn
+
 ## Windows-Programm – 11. November 2026
 
 - Neu: `windows/Larsens-Autowerkstatt.exe` öffnet die Werkstatt am PC in einem eigenen Fenster
