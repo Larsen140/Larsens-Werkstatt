@@ -2,6 +2,19 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 5.1 – 12. November 2026
+
+**Fehlersuche (alle 67 Modelle und jeder Knopf einmal durchgetestet)**
+- Reifen ragen nicht mehr durch die Kotflügel: Das Radhaus richtet sich jetzt nach der echten Radgröße, auch mit großen Felgen, Offroad-Reifen und tiefergelegtem Fahrwerk
+- Flache Sportwagen (Supersportler, Hypersportler, Flunder und Co.) haben ausgeformte Kotflügel über den Rädern statt einer Haube, durch die das Rad stößt
+- Offroad-Reifen: Die Stollen stehen nicht mehr als Klötze unter dem Reifen heraus
+- Escape am PC schließt das Fotostudio jetzt sauber, auch wenn gerade die Live-Vorschau läuft (vorher blieb die Werkstatt dahinter stehen)
+- Nach dem Live-Bereich wird das Foto in den anderen Reitern wieder frisch erstellt
+
+**Verbessert**
+- Scheinwerfer: dunkles Gehäuse mit zwei Linsen, die mit dem Licht aufleuchten
+- Fotostudio am PC, auf dem Tablet im Querformat und auf dem gedrehten Handy: große Vorschau links, Einstellungen rechts
+
 ## Version 5.0 – 12. November 2026
 
 **Live-Hintergründe ohne Schnitt**

@@ -123,6 +123,11 @@ input,textarea{-webkit-user-select:text;user-select:text}
 #wbody>.grp{background:#151a22;border:1px solid var(--line);border-radius:10px;padding:12px}
 #wbody>.grp>h3{color:var(--fg)}
 #shotSave{min-height:52px;font-size:18px;flex:none}
+@media (min-width:900px),(min-width:620px) and (max-height:540px){
+  #shotBox{width:min(1320px,100%);display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,420px);grid-template-rows:auto auto minmax(0,1fr) auto;grid-template-areas:"prev top" "prev tabs" "prev body" "msg save";gap:10px 16px}
+  #shotTop{grid-area:top}#shotPrev{grid-area:prev;min-height:0}#shotMsg{grid-area:msg;align-self:center}#wtabs{grid-area:tabs;grid-template-columns:repeat(3,minmax(0,1fr))}#wbody{grid-area:body}#shotSave,#liveBar{grid-area:save}
+}
+@media (min-width:620px) and (max-height:540px){#shotTop h2{font-size:20px}#shotSave,#liveBar .hb{min-height:44px}#wtabs button{padding:8px 1px}}
 .gr{display:flex;gap:6px;align-items:center}
 .gr span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #install{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:max(20px,env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) max(20px,env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));overflow:auto}
@@ -239,7 +244,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[n,v]of Object.entries(a)){if(n==='class')e.className=v;else if(n==='text')e.textContent=v;else if(n==='html')e.innerHTML=v;else if(n.startsWith('on'))e.addEventListener(n.slice(2),v);else e.setAttribute(n,v)}k.forEach(c=>c&&e.append(c));return e};
 /* Homescreen-Pflicht: nur in der GitHub-Version (dort gibt es ein Manifest), nur auf Handy und Tablet */
-const VERSION='5.0';
+const VERSION='5.1';
 {const bv=document.getElementById('bootV');if(bv)bv.textContent='Version '+VERSION}
 (function(){const de=document.documentElement;if(!de.classList.contains('pwa'))return;
  const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),alone=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
@@ -389,6 +394,7 @@ const SCENES={
 const FMT={pfp:{n:'Profilbild',w:2048,h:2048},banner:{n:'Banner',w:3000,h:1000},story:{n:'Story',w:1080,h:1920},iphone:{n:'iPhone',w:1290,h:2796},handy:{n:'Android-Handy',w:1440,h:3200},ipad:{n:'iPad / Tablet',w:2048,h:2732},pc:{n:'PC Full HD',w:1920,h:1080},wqhd:{n:'PC WQHD',w:2560,h:1440},pc4k:{n:'PC 4K',w:3840,h:2160}};
 
 const UPDATES=[
+ ['Version 5.1','Fehlersuche: Reifen ragen nicht mehr durch die Kotflügel (auch tiefergelegt und mit großen Felgen), flache Sportwagen haben ausgeformte Kotflügel. Scheinwerfer mit zwei Linsen, sauberere Offroad-Reifen. Fotostudio am PC und im Querformat zweispaltig mit großer Vorschau. Escape schließt das Studio sauber.'],
  ['Version 5.0','Live-Hintergründe ohne Schnitt: Die Schleife endet exakt dort, wo sie anfängt. Neu: Live-Vorschau, die jede Einstellung sofort zeigt, 8 Vorlagen, Rad-Tempo, Federn, Lichthupe, Kamerawackeln, Stärke-Regler, Regen, Schnee, Funkenflug, Nebel und eine Qualitätsstufe.'],
  ['Version 4.9','Live-Hintergründe: Im Fotostudio nimmt der neue Bereich „Live“ ein kurzes Video auf, mit drehenden Rädern, Nitro-Stößen, Reifenqualm, Auspuffflammen, Speed-Linien, fünf Kamerafahrten, Licht-Optionen, vier Längen und drei Größen, in jedem Format und mit jeder Kulisse.'],
  ['Version 4.8','Gedrückt halten markiert keinen Text mehr und öffnet kein Kopieren-Menü. Nur in Textfeldern und auf dem Vorschaubild im Fotostudio funktioniert es weiter.'],
@@ -430,18 +436,18 @@ function mono(p){const n=p.length,d=[],m=[];for(let i=0;i<n-1;i++)d[i]=(p[i+1][1
  return t=>{t=clamp(t,p[0][0],p[n-1][0]);let i=0;while(i<n-2&&t>p[i+1][0])i++;const h=p[i+1][0]-p[i][0],s=(t-p[i][0])/h,s2=s*s,s3=s2*s;
   return(2*s3-3*s2+1)*p[i][1]+(s3-2*s2+s)*h*m[i]+(-2*s3+3*s2)*p[i+1][1]+(s3-s2)*h*m[i+1]}}
 function profile(T){
- const belt=mono(T.belt),cf=mono(T.cab),L=T.L,W=T.W,R=T.R,Ra=R+.055,tp=T.taper||.2,th=T.th||.4;
+ const belt0=mono(T.belt),cf=mono(T.cab),L=T.L,W=T.W,R=Math.max(T.R,Math.min(S.rimIn*.0127,T.R-.02)+.05)+(S.tire==='offroad'?.012:0),Ra=R+.055,yW=R+Math.max(0,-S.ride/1000),tp=T.taper||.2,th=T.th||.4;
  const cab=t=>Math.max(0,cf(t)),X=t=>L/2-t*L;
  const hw=t=>W/2*(1-tp*Math.pow(Math.max(0,1-t/.09),2.2)-tp*.8*Math.pow(Math.max(0,(t-.9)/.1),2.2));
  const floor=t=>T.gc+.12*Math.pow(Math.max(0,1-t/.08),2)+.14*Math.pow(Math.max(0,(t-.92)/.08),2);
- const ax=[X(T.fa),X(T.ra)];
- const yU=t=>{const x=X(t);let y=floor(t);for(const a of ax){const d=Math.abs(x-a);if(d<Ra)y=Math.max(y,R+Math.sqrt(Ra*Ra-d*d))}return Math.min(y,belt(t)-.07)};
+ const ax=[X(T.fa),X(T.ra)],bn=[T.fa,T.ra].map(ta=>Math.max(0,yW+Ra+.085-belt0(ta))),bump=t=>{const x=X(t);return bn[0]*Math.exp(-Math.pow((x-ax[0])/(Ra*1.25),2))+bn[1]*Math.exp(-Math.pow((x-ax[1])/(Ra*1.25),2))},belt=t=>belt0(t)+bump(t);
+ const yU=t=>{const x=X(t);let y=floor(t);for(const a of ax){const d=Math.abs(x-a);if(d<Ra)y=Math.max(y,yW+Math.sqrt(Ra*Ra-d*d))}return Math.min(y,belt(t)-.07)};
  const c=T.cab;let i0=0;while(!(c[i0][1]===0&&c[i0+1][1]>0))i0++;let i1=c.length-1;while(!(c[i1][1]===0&&c[i1-1][1]>0))i1--;
  const ws=[c[i0][0],c[i0+1][0]],rw=[c[i1-1][0],c[i1][0]],sg=[ws[0]+.14*(ws[1]-ws[0]),rw[1]-.14*(rw[1]-rw[0])],d0=ws[0]+.55*(ws[1]-ws[0]);
  const fl=(T.fl||.03)+(S.wide?.055:0),fb=t=>{const x=X(t);return fl*(Math.exp(-Math.pow((x-ax[0])/.42,2))+Math.exp(-Math.pow((x-ax[1])/.42,2)))},hs=t=>hw(t)+fb(t);
- const sec=t=>{const yB=belt(t),cc=cab(t),h=hw(t),b=fb(t),u=yU(t),s=u+.03,g=h*(.9-th*cc),m=Math.min(1,cc/.1);
-  return[[u,0],[u,h*.8],[s,h*.97+b],[(s+yB)/2,h+b],[yB-.035,h*.995+b*.8],[yB,h*.965+b*.4],[yB+.03,h*.91],[yB+.045-.01*m+.93*cc,h*.78+(g-h*.78)*m],[yB+.055-.005*m+.99*cc,h*.45+(g*.6-h*.45)*m],[yB+.06+cc,0]]};
- return{d0,belt,cab,X,hw,hs,fl,yU,sec,ws,rw,sg,Ra,top:t=>belt(t)+.06+cab(t)};
+ const sec=t=>{const y0=belt0(t),bp=bump(t),yB=y0+bp,cc=cab(t),h=hw(t),b=fb(t),u=yU(t),s=u+.03,g=h*(.9-th*cc),m=Math.min(1,cc/.1);
+  return[[u,0],[u,h*.8],[s,h*.97+b],[(s+yB)/2,h+b],[yB-.035,h*.995+b*.8],[yB,h*.965+b*.4],[yB+.03,h*.91],[Math.max(y0+bp*.5+.045-.01*m+.93*cc,m*(yB+.042)),h*.78+(g-h*.78)*m],[y0+bp*.1+.055-.005*m+.99*cc,h*.45+(g*.6-h*.45)*m],[y0+.06+cc,0]]};
+ return{d0,belt:belt0,beltS:belt,cab,bump,X,hw,hs,fl,yU,sec,ws,rw,sg,Ra,Rw:R,yW,top:t=>belt0(t)+.06+cab(t)};
 }
 
 /* ---------- Renderer & Szene ---------- */
@@ -615,12 +621,12 @@ const M={
  std:P3({}),flip:P3({}),roof:P3({}),
  glass:P3({color:col('#0b1014'),transparent:true,opacity:.5,roughness:.04,metalness:0,side:THREE.DoubleSide,depthWrite:false,envMapIntensity:1.6}),
  under:P1({color:0x050506,roughness:.9,side:THREE.DoubleSide}),trim:P3({color:col('#0a0b0d'),roughness:.25,clearcoat:.6}),
- head:P3({color:col('#39424e'),emissive:0xffffff,roughness:.2,metalness:.35,clearcoat:1,envMapIntensity:.6}),tail:P3({color:col('#3a0004'),emissive:col('#ff1020'),roughness:.12,clearcoat:1}),
+ head:P3({color:col('#252b34'),emissive:0xffffff,roughness:.16,metalness:.55,clearcoat:1,envMapIntensity:.8}),tail:P3({color:col('#3a0004'),emissive:col('#ff1020'),roughness:.12,clearcoat:1}),
  liner:P1({color:col('#1a1b1e'),roughness:.95,side:THREE.BackSide}),none:new THREE.MeshBasicMaterial({visible:false}),
  tire:P1({roughness:.85,side:THREE.DoubleSide}),rim:P3({side:THREE.DoubleSide}),steel:P1({color:col('#8a8f96'),metalness:.9,roughness:.35}),
  caliper:P1({roughness:.4,metalness:.2}),chrome:P1({color:col('#e6e8ec'),metalness:1,roughness:.08,side:THREE.DoubleSide}),
  carbon:P3({color:0xffffff,roughness:.35,clearcoat:1,metalness:.3}),
- wheel:P1({roughness:.6}),deco:P3({}),mat:P1({roughness:1}),belt:P1({roughness:.8}),wtrim:P1({}),drl:P1({color:0x111111,emissive:0xffffff}),tled:P1({color:0x220000,emissive:col('#ff1525')}),
+ wheel:P1({roughness:.6}),deco:P3({}),mat:P1({roughness:1}),belt:P1({roughness:.8}),wtrim:P1({}),drl:P1({color:0x111111,emissive:0xffffff}),lens:P3({color:0x0b0d11,emissive:0xffffff,roughness:.08,metalness:.2,clearcoat:1}),tled:P1({color:0x220000,emissive:col('#ff1525')}),
  seat:P1({}),accent:P1({roughness:.6}),dash:P1({roughness:.7}),amb:new THREE.MeshBasicMaterial({}),screen:new THREE.MeshBasicMaterial({toneMapped:false}),
  plate:P1({roughness:.5,transparent:true}),glow:new THREE.MeshBasicMaterial({transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}),neon:new THREE.MeshBasicMaterial({toneMapped:false,fog:false})
 };
@@ -659,7 +665,7 @@ function bodyGeo(){
  const cls=(tm,k,c,m)=>{if(k<=1)return 2;if(c)return 0;
   if(k<=5){if(m>=10&&m<=14&&tm>.012&&tm<.07)return 5;if(m>=12&&m<=14&&tm>.945&&tm<.99)return 6;return 0}
   if(k===6){if(!inR(tm,P.sg))return 0;if(T.panel&&tm>T.pil[0]+.009)return 0;return T.pil.some(p=>Math.abs(tm-p)<.009)?4:1}
-  if(inR(tm,P.ws)||inR(tm,P.rw))return m===7*NS?0:1;if(tm>=P.ws[1]&&tm<=P.rw[0])return 3;return 0};
+  if(inR(tm,P.ws)&&P.cab(tm)<P.bump(tm)*.75)return 0;if(inR(tm,P.ws)||inR(tm,P.rw))return m===7*NS?0:1;if(tm>=P.ws[1]&&tm<=P.rw[0])return 3;return 0};
  const n=rings.length;
  for(let i=0;i<n-1;i++){const tm=(rings[i].t+rings[i+1].t)/2,c=rings[i].cap||rings[i+1].cap;
   for(let j=0;j<NR;j++){const m=j<NH?j:NR-1-j,k=Math.floor(m/NS),a=i*NR+j,b=i*NR+(j+1)%NR,cc=(i+1)*NR+(j+1)%NR,d=(i+1)*NR+j;
@@ -677,7 +683,7 @@ function wheelTemplate(){
  const R=wheelR,tw=S.tireW/1000,rr=Math.min(S.rimIn*.0127,R-.02),w2=tw/2,g=new THREE.Group(),V=(a,b)=>new THREE.Vector2(a,b);
  const sw=rr+(R-rr)*.5;
  g.add(new THREE.Mesh(new THREE.LatheGeometry([V(rr,-w2*.9),V(sw,-w2),V(R-.015,-w2*.92),V(R,-w2*.7),V(R,w2*.7),V(R-.015,w2*.92),V(sw,w2),V(rr,w2*.9)],48),M.tire));
- if(S.tire==='offroad'){const kg=new THREE.BoxGeometry(.075,tw*.42,.04);for(let i=0;i<22;i++){const a=i/22*Math.PI*2,m=new THREE.Mesh(kg,M.tire);m.position.set(Math.cos(a)*(R+.008),(i%2?1:-1)*tw*.23,Math.sin(a)*(R+.008));m.rotation.y=-a+Math.PI/2;g.add(m)}}
+ if(S.tire==='offroad'){const kg=new THREE.BoxGeometry(.06,tw*.42,.026);for(let i=0;i<22;i++){const a=i/22*Math.PI*2,m=new THREE.Mesh(kg,M.tire);m.position.set(Math.cos(a)*(R-.007),(i%2?1:-1)*tw*.23,Math.sin(a)*(R-.007));m.rotation.y=-a+Math.PI/2;g.add(m)}}
  g.add(new THREE.Mesh(new THREE.LatheGeometry([V(rr,-w2*.9),V(rr*.92,-w2*.6),V(rr*.92,w2*.55),V(rr*.96,w2*.8),V(rr+.004,w2*.92)],48),M.rim));
  const yf=S.rim==='deep'?w2*.15:w2*.62,ro=rr*.94,rh=.055,th=.028;
  const spoke=(r1,a1,r2,a2,wd)=>{const x1=r1*Math.cos(a1),z1=r1*Math.sin(a1),x2=r2*Math.cos(a2),z2=r2*Math.sin(a2),dx=x2-x1,dz=z2-z1;
@@ -713,7 +719,7 @@ function buildExtras(g){
  const strip=(m,t0,t1,mat,wy,off,nn)=>{const pos=[],idx=[];for(const q of[-1,1]){const b=pos.length/3;for(let i=0;i<=nn;i++){const t=t0+(t1-t0)*i/nn,h=halfRing(P.sec(t))[m];pos.push(X(t),h[0]-wy/2,q*(h[1]+off),X(t),h[0]+wy/2,q*(h[1]+off));if(i)idx.push(b+i*2-2,b+i*2-1,b+i*2,b+i*2-1,b+i*2+1,b+i*2)}}
   const ge=new THREE.BufferGeometry();ge.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));ge.setIndex(idx);ge.computeVertexNormals();const me=new THREE.Mesh(ge,mat);me.material.side=THREE.DoubleSide;g.add(me)};
  strip(13,.012,.034,M.ind,.026,.008,4);strip(12,.968,.99,M.ind,.022,.008,4);
- strip(14,.014,.068,M.drl,.014,.006,10);strip(13,.948,.988,M.tled,.014,.006,8);strip(6*NS,P.sg[0],P.sg[1],M.wtrim,.017,.004,48);
+ strip(14,.014,.068,M.drl,.014,.006,10);strip(12,.02,.035,M.lens,.05,.004,3);strip(12,.041,.056,M.lens,.05,.004,3);strip(13,.948,.988,M.tled,.014,.006,8);strip(6*NS,P.sg[0],P.sg[1],M.wtrim,.017,.004,48);
  const seamTop=t=>{const h=halfRing(P.sec(t)),x=X(t),pos=[],idx=[];for(const q of[-1,1]){const b=pos.length/3;let n=0;for(let m=6*NS;m<=NH;m++,n++){pos.push(x-.005,h[m][0]+.004,q*h[m][1],x+.005,h[m][0]+.004,q*h[m][1]);if(n)idx.push(b+n*2-2,b+n*2-1,b+n*2,b+n*2-1,b+n*2+1,b+n*2)}}
   const ge=new THREE.BufferGeometry();ge.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));ge.setIndex(idx);ge.computeVertexNormals();g.add(new THREE.Mesh(ge,M.under))};
  seamTop(P.ws[0]-.012);if(P.rw[1]<.9)seamTop(P.rw[1]+.012);seam(g,.09);seam(g,.925);
@@ -725,7 +731,7 @@ function buildExtras(g){
  if(S.num.trim()){const t=(P.d0+T.pil[0])/2;for(const q of[-1,1]){const pn=mk(new THREE.PlaneGeometry(.52,.52),M.num,X(t),(belt(t)+yU(t))/2+.03,q*(P.hs(t)+.012),g);if(q<0)pn.rotation.y=Math.PI}}
  const drs=[P.d0+.004,...T.pil.filter(p=>p>P.d0+.05&&p<P.sg[1]-.01)].slice(0,T.seats>=4?3:2);
  drs.forEach((t,i)=>{seam(g,t);if(i){const th=t-.045;for(const q of[-1,1])mk(rbox(.14,.024,.022,.009),M.chrome,X(th),belt(th)-.085,q*(P.hs(th)*.995+.008),g)}});
- for(const ta of[T.fa,T.ra])if(T.R+P.Ra<belt(ta)-.03)for(const q of[-1,1]){const lip=mk(new THREE.TorusGeometry(P.Ra+.004,.021,8,30,Math.PI),T.gc>=.22?M.trim:'paint',X(ta),T.R,q*(P.hs(ta)*.985),g,1);lip.scale.z=1.6}
+ for(const ta of[T.fa,T.ra])for(const q of[-1,1]){const lip=mk(new THREE.TorusGeometry(P.Ra+.004,.021,8,30,Math.PI),T.gc>=.22?M.trim:'paint',X(ta),P.yW,q*(P.hs(ta)*.985),g,1);lip.scale.z=1.6}
  {const tf=P.rw[0]-.03;if(P.cab(tf)>.2)mk(rbox(.17,.05,.03,.012),'paint',X(tf),top(tf)+.015,0,g)}
  {const yc0=(yU(0)+top(0))/2,lo=yc0-(yc0-yU(0))*.84,hi=yc0+(belt(0)-yc0)*.84,wf=hw(0)*.83,xf=L/2+.04,bar=lo+(hi-lo)*.45;
   mk(rbox(.07,.05,wf*2,.02),'paint',xf,bar,0,g);for(let i=1;i<=3;i++)mk(new THREE.BoxGeometry(.02,.008,wf*1.6),M.chrome,xf+.004,bar+(hi-bar)*i/4+.01,0,g);
@@ -791,7 +797,7 @@ function buildInterior(g){
 function disposeTree(o){o.traverse(c=>{if(c.geometry)c.geometry.dispose()})}
 function buildCar(drop){
  disposeTree(car);car.clear();if(drop&&S.drop&&!inside)dropT=0;
- T=TYPES[S.type];P=profile(T);wheelR=Math.max(T.R,Math.min(S.rimIn*.0127,T.R-.02)+.05)+(S.tire==='offroad'?.012:0);
+ T=TYPES[S.type];P=profile(T);wheelR=P.Rw;
  bodyG=new THREE.Group();bodyG.position.y=S.ride/1000;car.add(bodyG);
  const geo=bodyGeo();
  bodyMesh=new THREE.Mesh(geo,[bodyMat,M.glass,M.under,M.roof,M.trim,M.head,M.tail]);bodyMesh.castShadow=true;bodyG.add(bodyMesh);
@@ -815,7 +821,7 @@ function applyMats(){
  if(bodyMesh){bodyMesh.material[0]=bodyMat;bodyMesh.material[3]=S.roof==='body'?bodyMat:S.roof==='glass'?M.glass:M.roof;linerMesh.material[3]=S.roof==='glass'?M.none:M.liner}
  M.roof.color.copy(col(S.roof==='black'?'#08090b':S.paint2));M.roof.metalness=S.roof==='black'?0:f[0];M.roof.roughness=S.roof==='black'?.2:f[1];M.roof.clearcoat=1;
  M.glass.opacity=.22+S.tint*.74;
- const lit=S.lights?1:0;M.head.emissive.copy(col(S.lamp));M.head.emissiveIntensity=.01+lit*.1;M.tail.emissiveIntensity=.2+lit*.6;M.drl.emissive.copy(col(S.lamp));M.drl.emissiveIntensity=.5+lit*4;M.tled.emissiveIntensity=.6+lit*3.5;
+ const lit=S.lights?1:0;M.head.emissive.copy(col(S.lamp));M.head.emissiveIntensity=.01+lit*.1;M.tail.emissiveIntensity=.2+lit*.6;M.drl.emissive.copy(col(S.lamp));M.drl.emissiveIntensity=.5+lit*4;M.lens.emissive.copy(col(S.lamp));M.lens.emissiveIntensity=.02+lit*1.6;M.tled.emissiveIntensity=.6+lit*3.5;
  {const ch=S.trimc==='chrom';M.wtrim.color.copy(col(ch?'#e6e8ec':'#08090b'));M.wtrim.metalness=ch?1:.2;M.wtrim.roughness=ch?.1:.35}
  if(spot){spot.color.copy(col(S.lamp));spot.intensity=lit*1.1}
  const rf=S.rimFin;M.rim.color.copy(col(S.rimCol));M.rim.metalness=rf==='matt'?.5:rf==='chrom'?1:.85;M.rim.roughness=rf==='matt'?.65:rf==='chrom'?.05:.25;M.rim.clearcoat=rf==='gloss'?1:0;
@@ -1020,7 +1026,7 @@ const PANES={
    el('p',{class:'note',text:'Eigene Farben (Stil „Eigene Farben“): Schild und Schrift'}),swatch('plateCol',['#0b1f5c','#101114','#c1121f','#0f8a3c','#f4f5f7','#ffb020'],pch),swatch('plateTxt',['#ffffff','#101114','#ffb020','#ff3b30','#7cd4ff'],pch),
    chips('plateShow',[['both','Vorne und hinten'],['rear','Nur hinten'],['none','Ohne']],prb));
   pdraw();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(pdraw);
-  grp('Fahrwerk',slider('ride','Höhe',-50,60,5,v=>(v>0?'+':'')+v+' mm',()=>{bodyG.position.y=S.ride/1000;shDirty=true;need=3;if(inside)setView()}));
+  grp('Fahrwerk',slider('ride','Höhe',-50,60,5,v=>(v>0?'+':'')+v+' mm',()=>{buildCar(0);if(inside)setView()}));
   grp('Heckspoiler',chips('spoiler',[['none','Keiner'],['lip','Abrisskante'],['wing','Heckflügel'],['gt','GT-Flügel Carbon']],rebuild));
   grp('Anbauteile',el('div',{class:'chips'},toggle('splitter','Frontsplitter',rebuild),toggle('skirts','Seitenschweller',rebuild),toggle('diff','Diffusor',rebuild),toggle('scoop','Lufthutze',rebuild),toggle('wide','Breitbau-Kit',rebuild),toggle('roofbox','Dachbox',rebuild),toggle('ledbar','LED-Lichtleiste',rebuild)));
   const ni=el('input',{class:'txt',id:'num',maxlength:'3',value:S.num,placeholder:'z. B. 7','aria-label':'Startnummer'});ni.addEventListener('input',()=>{S.num=ni.value;save();rebuild()});grp('Startnummer auf den Türen',ni);
@@ -1200,7 +1206,7 @@ function liveSim(R){
  R.nwin=S.liveNitro&&((k>.12&&k<.4)||(k>.62&&k<.9));if(R.nwin)A.nitro=.12;
  if(S.liveSmoke&&smokePos.length){R.sm+=DT*38;while(R.sm>1){R.sm--;const q=smokePos[Math.floor(Math.random()*smokePos.length)];spawn('smoke',q[0]+(Math.random()-.5)*.3,.06+liftY,q[1])}}
  if(S.liveFlame&&pipePos.length&&Math.random()<.55){const q=pipePos[Math.floor(Math.random()*pipePos.length)];spawn('flame',q[0],q[1]+by,q[2])}
- if(S.liveFlash){const c=Math.max(1,Math.round(R.dur/3)),u=fr(k*c),lit=u<.05||(u>.09&&u<.14)?1.7:(S.lights?1:0);M.drl.emissiveIntensity=.5+lit*4;M.head.emissiveIntensity=.01+lit*.1;M.flareH.opacity=S.flare&&lit?Math.min(1,.6*lit):0;if(spot)spot.intensity=lit*1.1}
+ if(S.liveFlash){const c=Math.max(1,Math.round(R.dur/3)),u=fr(k*c),lit=u<.05||(u>.09&&u<.14)?1.7:(S.lights?1:0);M.drl.emissiveIntensity=.5+lit*4;M.lens.emissiveIntensity=.02+lit*1.6;M.head.emissiveIntensity=.01+lit*.1;M.flareH.opacity=S.flare&&lit?Math.min(1,.6*lit):0;if(spot)spot.intensity=lit*1.1}
  if(R.base){const dr=R.base.dir.clone();let d=R.base.d;const lc=S.liveCam;
   if(lc==='dreh')dr.applyAxisAngle(UPV,ph);else if(lc==='schwenk')dr.applyAxisAngle(UPV,Math.sin(ph)*.34*amp);else if(lc==='zoom')d*=1-Math.min(.5,.16*amp)*(.5-.5*Math.cos(ph));else if(lc==='hoch'){dr.y+=.22*amp*(.5-.5*Math.cos(ph));dr.normalize()}
   R.base.place(dr,d);if(S.liveShake){R.cam.rotateY(.0035*(Math.sin(ph*7)+Math.sin(ph*13+1)));R.cam.rotateX(.0028*(Math.sin(ph*9+2)+Math.sin(ph*17)));R.cam.updateMatrixWorld()}}
@@ -1328,7 +1334,7 @@ WT.forEach(([k,l])=>$('#wtabs').append(el('button',{role:'tab','data-t':k,text:l
 $('#bShot').onclick=()=>{$('#shot').hidden=false;$('#shotMsg').textContent='Bild wird erstellt …';studio();queueShot()};
 $('#liveRec').onclick=recordLive;$('#liveSave').onclick=saveLive;
 $('#shotClose').onclick=()=>{if(rec&&!rec.preview)return;liveStop();liveOpen=false;clearTimeout(liveT);$('#shot').hidden=true;try{$('#shotVid').pause()}catch(e){}show()};
-document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#shot').hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#shot').hidden)$('#shotClose').click()});
 $('#shotSave').onclick=async()=>{
  const msg=$('#shotMsg'),btn=$('#shotSave'),hint='Falls nichts passiert: Halte das Bild oben gedrückt (Handy) oder klicke mit rechts darauf (PC) und wähle „Bild sichern“.';
  if(saving)return;saving=true;btn.setAttribute('aria-busy','true');
