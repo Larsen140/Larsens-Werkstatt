@@ -2,6 +2,23 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 5.0 – 12. November 2026
+
+**Live-Hintergründe ohne Schnitt**
+- Die Schleife endet jetzt exakt dort, wo sie anfängt: Räder, Kamera, Qualm, Flammen, Nitro, Blinker und Wetter machen pro Schleife eine ganze Zahl an Umläufen, und vor der Aufnahme läuft die Schleife einmal unsichtbar durch
+- Vorher startete jedes Video mit „leerer“ Szene (kein Qualm, Räder in Ausgangsstellung), das sah man beim Wiederholen als Sprung
+
+**Live-Bereich neu aufgebaut**
+- Live-Vorschau oben: zeigt sofort und in Bewegung, was du einstellst
+- 8 Vorlagen mit einem Tipp: Showroom, Vollgas, Nitro-Start, Burnout, Regennacht, Winter, Lowrider, Funkenflug
+- Räder: Tempo langsam, normal oder schnell
+- Effekte am Auto: Nitro-Stöße, Auspuffflammen, Reifenqualm, Federn (Hydraulik)
+- Kamerafahrt mit Stärke-Regler und Kamerawackeln
+- Licht: Lichthupe, Warnblinker, Unterbodenlicht (auch pulsierend), Farbwechsel-Lack
+- Wetter und Luft: Regen, Schnee, Funkenflug, Nebel, Speed-Linien
+- Qualitätsstufe „Hohe Qualität“
+- Knöpfe „Aufnehmen“ und „Video speichern“ stehen fest am unteren Rand; nach der Aufnahme läuft das Video oben in Schleife
+
 ## Version 4.9 – 12. November 2026
 
 **Live-Hintergründe** (Fotostudio → „Live“)

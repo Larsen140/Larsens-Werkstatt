@@ -97,6 +97,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
 #shotPrev img.round{border-radius:50%}
 #shotMsg{margin:0;min-height:1.3em;color:var(--mute);font-size:12.5px;text-align:center}
 #wtabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}
+#liveBar{flex:none}
+#liveBar .hb{min-height:52px;font-size:17px}
+#liveBar .hb:disabled{opacity:.5}
+#shotPrev canvas{max-width:100%;max-height:100%;border-radius:4px;display:block}
 #shotPrev video{max-width:100%;max-height:100%;border-radius:4px;display:block}
 #shot.busy #wtabs,#shot.busy #wbody,#shot.busy #shotTop{pointer-events:none;opacity:.45}
 #wtabs button{min-width:0;background:var(--raise);border:1px solid var(--line);border-radius:7px;padding:10px 1px;font:700 13px/1 var(--display);text-transform:uppercase;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -202,11 +206,12 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 <div id="shot" hidden>
   <div id="shotBox" role="dialog" aria-modal="true" aria-labelledby="shotH">
     <div id="shotTop"><h2 id="shotH">Fotostudio</h2><button class="chip" id="shotClose">Schließen</button></div>
-    <div id="shotPrev"><img id="shotImg" alt="Vorschau deines Bilds"><video id="shotVid" hidden loop muted playsinline autoplay aria-label="Vorschau deines Live-Hintergrunds"></video></div>
+    <div id="shotPrev"><img id="shotImg" alt="Vorschau deines Bilds"><canvas id="liveCv" hidden aria-label="Live-Vorschau"></canvas><video id="shotVid" hidden loop muted playsinline autoplay aria-label="Vorschau deines Live-Hintergrunds"></video></div>
     <p id="shotMsg" role="status"></p>
     <div id="wtabs" role="tablist" aria-label="Foto-Einstellungen"></div>
     <div id="wbody"></div>
     <button class="hb go" id="shotSave">In Galerie speichern</button>
+    <div id="liveBar" class="row" hidden><button class="hb go" id="liveRec">Aufnehmen</button><button class="hb" id="liveSave" hidden>Video speichern</button></div>
   </div>
 </div>
 
@@ -218,7 +223,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[n,v]of Object.entries(a)){if(n==='class')e.className=v;else if(n==='text')e.textContent=v;else if(n==='html')e.innerHTML=v;else if(n.startsWith('on'))e.addEventListener(n.slice(2),v);else e.setAttribute(n,v)}k.forEach(c=>c&&e.append(c));return e};
 /* Homescreen-Pflicht: nur in der GitHub-Version (dort gibt es ein Manifest), nur auf Handy und Tablet */
-const VERSION='4.9';
+const VERSION='5.0';
 {const bv=document.getElementById('bootV');if(bv)bv.textContent='Version '+VERSION}
 (function(){const de=document.documentElement;if(!de.classList.contains('pwa'))return;
  const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),alone=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
@@ -368,6 +373,7 @@ const SCENES={
 const FMT={pfp:{n:'Profilbild',w:2048,h:2048},banner:{n:'Banner',w:3000,h:1000},story:{n:'Story',w:1080,h:1920},iphone:{n:'iPhone',w:1290,h:2796},handy:{n:'Android-Handy',w:1440,h:3200},ipad:{n:'iPad / Tablet',w:2048,h:2732},pc:{n:'PC Full HD',w:1920,h:1080},wqhd:{n:'PC WQHD',w:2560,h:1440},pc4k:{n:'PC 4K',w:3840,h:2160}};
 
 const UPDATES=[
+ ['Version 5.0','Live-Hintergründe ohne Schnitt: Die Schleife endet exakt dort, wo sie anfängt. Neu: Live-Vorschau, die jede Einstellung sofort zeigt, 8 Vorlagen, Rad-Tempo, Federn, Lichthupe, Kamerawackeln, Stärke-Regler, Regen, Schnee, Funkenflug, Nebel und eine Qualitätsstufe.'],
  ['Version 4.9','Live-Hintergründe: Im Fotostudio nimmt der neue Bereich „Live“ ein kurzes Video auf, mit drehenden Rädern, Nitro-Stößen, Reifenqualm, Auspuffflammen, Speed-Linien, fünf Kamerafahrten, Licht-Optionen, vier Längen und drei Größen, in jedem Format und mit jeder Kulisse.'],
  ['Version 4.8','Gedrückt halten markiert keinen Text mehr und öffnet kein Kopieren-Menü. Nur in Textfeldern und auf dem Vorschaubild im Fotostudio funktioniert es weiter.'],
  ['Version 4.7','iPhone: Der Ton spielt jetzt auch, wenn der Stummschalter an der Seite an ist. Die Lautstärke regelst du wie bei Musik mit den Lautstärketasten.'],
@@ -395,7 +401,7 @@ const DEF={type:0,paint:'#c1121f',finish:'metallic',paint2:'#1d6fe0',roof:'body'
  rim:'5',rimIn:20,rimCol:'#c9ced6',rimFin:'gloss',caliper:'#ffc400',tire:'sport',tireW:265,white:false,spacer:0,camber:0,
  ride:0,spoiler:'none',splitter:false,skirts:false,diff:false,scoop:false,pipes:2,tint:.45,glow:false,glowCol:'#00e5ff',lamp:'#ffffff',plate:'M AX 2026',plateStyle:'eu',plateLand:'D',plateFont:'din',plateCol:'#0b1f5c',plateTxt:'#ffffff',plateFrame:true,plateShow:'both',
  engine:'v8',stage:0,exhaust:'serie',seat:'sport',seatMat:'leder',seatCol:'#5a2a1e',accent:'#ffb020',dash:'#17191d',amb:true,ambCol:'#2ea8ff',cage:false,
- scene:'werkstatt',lift:false,spin:true,lights:true,gfx:'auto',vfx:true,flare:true,drop:true,shake:true,spinSpeed:.9,vol:.55,show:false,ui:'#ffb020',glowPulse:false,wheelForm:'rund',wheelCol:'#16171a',deco:'carbon',liner:'#1d1f23',mat:'#141518',belt:'#16171a',screen:'normal',shifter:'auto',trimc:'chrom',wide:false,roofbox:false,ledbar:false,num:'',hazard:false,rainbow:false,sfx:true,wpBg:'szene',wpCam:'aktuell',wpBadge:false,liveDur:6,liveRoll:true,liveNitro:true,liveSmoke:false,liveFlame:false,liveSpeed:false,liveCam:'schwenk',liveSize:'mittel',wpSharp:.35,wpZoom:1,wpElev:0,wpShift:0,wpTilt:0,wpLens:'normal',wpFilter:'none',wpVig:.3,wpGlow:.25,wpGrain:0,wpFrame:'none',wpSub:'',wpOutline:false,wpBgCol:'#1d6fe0',wpSpeed:false,wpFmt:'iphone',wpText:'',wpPos:'top',wpSize:1,wpCol:'#ffffff',wpFont:'sport'};
+ scene:'werkstatt',lift:false,spin:true,lights:true,gfx:'auto',vfx:true,flare:true,drop:true,shake:true,spinSpeed:.9,vol:.55,show:false,ui:'#ffb020',glowPulse:false,wheelForm:'rund',wheelCol:'#16171a',deco:'carbon',liner:'#1d1f23',mat:'#141518',belt:'#16171a',screen:'normal',shifter:'auto',trimc:'chrom',wide:false,roofbox:false,ledbar:false,num:'',hazard:false,rainbow:false,sfx:true,wpBg:'szene',wpCam:'aktuell',wpBadge:false,liveDur:6,liveRoll:true,liveNitro:true,liveSmoke:false,liveFlame:false,liveSpeed:false,liveCam:'schwenk',liveSize:'mittel',liveRollV:'normal',liveBounce:false,liveShake:false,liveFlash:false,liveFx:'keine',liveAmp:1,liveQ:'normal',wpSharp:.35,wpZoom:1,wpElev:0,wpShift:0,wpTilt:0,wpLens:'normal',wpFilter:'none',wpVig:.3,wpGlow:.25,wpGrain:0,wpFrame:'none',wpSub:'',wpOutline:false,wpBgCol:'#1d6fe0',wpSpeed:false,wpFmt:'iphone',wpText:'',wpPos:'top',wpSize:1,wpCol:'#ffffff',wpFont:'sport'};
 const S=Object.assign({},DEF);
 try{const s=JSON.parse(localStorage.getItem('larsens-autowerkstatt-2')||'null');if(s&&typeof s==='object')for(const k in DEF)if(typeof s[k]===typeof DEF[k])S[k]=s[k]}catch(e){}
 if(!TYPES[S.type])S.type=0;
@@ -427,7 +433,7 @@ const bootEl=$('#boot');
 if(gated){bootEl.remove();return}
 try{if(!localStorage.getItem('lw-gfx-auto')){S.gfx='auto';localStorage.setItem('lw-gfx-auto','1')}}catch(e){}
 const canvas=$('#c'),stage=$('#stage');
-let need=3,shDirty=true,dpr=1,fxAlive=false,rec=null,liveBlob=null,liveUrl=null;
+let need=3,shDirty=true,dpr=1,fxAlive=false,rec=null,liveBlob=null,liveUrl=null,liveShown=false,liveOpen=false,liveSaved=null,liveSeq=0,liveT=0;const TW={haz:1.4,pulse:4,rain:.08},DT=1/30,realRandom=Math.random;
 let renderer;
 try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'})}catch(e){
  stage.append(el('p',{class:'note',style:'position:absolute;inset:40% 16px auto;text-align:center',text:'Dein Browser kann hier keine 3D-Grafik anzeigen. Probiere einen aktuellen Browser oder aktiviere WebGL.'}));return}
@@ -1137,48 +1143,89 @@ async function drawOverlay(g,w,h,video){
  if(edge){g.fillStyle='#f6f4ee';g.fillRect(0,0,w,edge);g.fillRect(0,0,edge,h);g.fillRect(w-edge,0,edge,h);g.fillRect(0,h-edge*3,w,edge*3)}
  if(S.wpFrame==='linie'){g.strokeStyle=S.ui;g.lineWidth=Math.max(2,s0*.004);const o=s0*.03;g.strokeRect(o,o,w-2*o,h-2*o)}
 }
-/* ---------- Live-Hintergrund: kurzes Video aus der 3D-Ansicht ---------- */
+/* ---------- Live-Hintergrund: nahtlose Videoschleife aus der 3D-Ansicht ----------
+   Alles läuft in festen 1/30-s-Schritten und mit festem Zufall. Jede Bewegung macht pro Schleife eine ganze Zahl
+   an Umläufen, und vor der Aufnahme läuft die Schleife einmal unsichtbar durch. Dadurch gleicht das Bild nach
+   dem letzten Schritt exakt dem ersten, und beim Wiederholen gibt es keinen Schnitt. */
 function recMime(){if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream)return null;return['video/mp4;codecs=avc1.42E01E','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(m=>{try{return MediaRecorder.isTypeSupported(m)}catch(e){return false}})||null}
-function liveLines(g,w,h,t,a){g.save();for(let i=0;i<44;i++){const r1=(i*.618034)%1,r2=(i*.381966+.13)%1,len=w*(.2+r2*.5),x=w+len-(((r1*1.7+t*(.7+r2*1.2))%1)*(w+2*len)),y=((i*.754877)%1)*h,th=Math.max(1,h*(.0012+r2*.0026)),gr=g.createLinearGradient(x,0,x+len,0);
+function seedRand(a){let v=a>>>0;Math.random=()=>{v=(v+0x6D2B79F5)|0;let t=Math.imul(v^v>>>15,1|v);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const fr=x=>x-Math.floor(x);
+function liveLines(g,w,h,k,dur,a){g.save();for(let i=0;i<44;i++){const r1=fr(i*.618034),r2=fr(i*.381966+.13),len=w*(.2+r2*.5),cyc=Math.max(1,Math.round(dur*.9*(.7+r2*1.2))),x=w+len-fr(r1*1.7+k*cyc)*(w+2*len),y=fr(i*.754877)*h,th=Math.max(1,h*(.0012+r2*.0026)),gr=g.createLinearGradient(x,0,x+len,0);
   gr.addColorStop(0,'rgba(255,255,255,0)');gr.addColorStop(.5,`rgba(255,255,255,${a*(.2+r1*.45)})`);gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.fillRect(x,y,len,th)}g.restore()}
-function recFrame(dt){
- const R=rec;R.t+=dt;const k=Math.min(1,R.t/R.dur),ph=k*Math.PI*2,by=bodyG?bodyG.position.y+car.position.y:0;
- if(S.liveRoll)for(const o of allW)o.w.rotation.y-=o.s*dt*13;
- const nwin=S.liveNitro&&((k>.12&&k<.4)||(k>.62&&k<.9));if(nwin)A.nitro=.12;
- if(S.liveSmoke&&smokePos.length){R.sm+=dt*38;while(R.sm>1){R.sm--;const q=smokePos[Math.floor(Math.random()*smokePos.length)];spawn('smoke',q[0]+(Math.random()-.5)*.3,.06+liftY,q[1])}}
- if(S.liveFlame&&pipePos.length&&Math.random()<.55){const q=pipePos[Math.floor(Math.random()*pipePos.length)];spawn('flame',q[0],q[1]+by,q[2])}
- if(R.base){const dr=R.base.dir.clone();let d=R.base.d;const lc=S.liveCam;if(lc==='dreh')dr.applyAxisAngle(UPV,ph);else if(lc==='schwenk')dr.applyAxisAngle(UPV,Math.sin(ph)*.34);else if(lc==='zoom')d*=1-.16*(.5-.5*Math.cos(ph));else if(lc==='hoch'){dr.y+=.22*(.5-.5*Math.cos(ph));dr.normalize()}R.base.place(dr,d)}
- if(R.n<2||S.hazard)renderer.shadowMap.needsUpdate=true;R.n++;
- renderer.render(scene,R.cam);const g=R.g,w=R.w,h=R.h;
- if(R.bg){g.drawImage(R.bg,0,0);if(S.liveSpeed)liveLines(g,w,h,R.t*.9,1)}else g.clearRect(0,0,w,h);
- g.drawImage(renderer.domElement,0,0,w,h);if(S.liveSpeed&&!R.bg)liveLines(g,w,h,R.t*.9,.55);
- if(nwin){const m=Math.max(w,h),v=g.createRadialGradient(w/2,h/2,m*.3,w/2,h/2,m*.72);v.addColorStop(0,'rgba(60,160,255,0)');v.addColorStop(1,`rgba(60,160,255,${.2+.14*Math.random()})`);g.fillStyle=v;g.fillRect(0,0,w,h)}
- g.drawImage(R.ov,0,0);
- const sec=Math.ceil(R.dur-R.t);if(sec!==R.sec){R.sec=sec;$('#shotMsg').textContent='Aufnahme läuft … noch '+Math.max(0,sec)+' s. Bitte die App offen lassen.'}
- if(R.t>=R.dur&&!R.done){R.done=true;R.finish()}
-}
-async function recordLive(){
- if(rec)return;const msg=$('#shotMsg'),mime=recMime();clearTimeout(shotTimer);
- if(!mime){msg.textContent='Dieses Gerät kann in der App kein Video aufnehmen. Tipp: Starte eine Bildschirmaufnahme und filme die 3D-Ansicht.';return}
- const f=FMT[S.wpFmt]||FMT.iphone,maxL={klein:960,mittel:1280,gross:1920}[S.liveSize]||1280,k=Math.min(1,maxL/Math.max(f.w,f.h)),w=Math.round(f.w*k/2)*2,h=Math.round(f.h*k/2)*2;
- const cv=document.createElement('canvas');cv.width=w;cv.height=h;const g=cv.getContext('2d');g.imageSmoothingQuality='high';
- const custom=S.wpBg!=='szene'&&!inside;let bg=null;if(custom){bg=document.createElement('canvas');bg.width=w;bg.height=h;drawBg(bg.getContext('2d'),w,h,S.wpBg)}
+function liveWeather(g,w,h,k,dur,kind){g.save();const s0=Math.min(w,h);
+ if(kind==='regen'){g.strokeStyle='rgba(205,225,255,.4)';g.lineWidth=Math.max(1,s0*.0022);g.beginPath();for(let i=0;i<110;i++){const r1=fr(i*.618034),r2=fr(i*.381966+.1),cyc=Math.max(1,Math.round(dur*(1.5+r2*1.3))),y=fr(fr(i*.754877)+k*cyc)*h*1.2-h*.1,x=r1*w*1.2-y*.14,l=h*(.03+r2*.03);g.moveTo(x,y);g.lineTo(x-l*.14,y+l)}g.stroke();g.fillStyle='rgba(20,30,50,.12)';g.fillRect(0,0,w,h)}
+ else if(kind==='schnee'){for(let i=0;i<90;i++){const r1=fr(i*.618034),r2=fr(i*.381966+.1),cyc=Math.max(1,Math.round(dur*(.14+r2*.2))),y=fr(fr(i*.754877)+k*cyc)*h*1.1-h*.05,x=fr(r1+.02*Math.sin(k*Math.PI*2*Math.round(1+r2*3)+i))*w;g.fillStyle=`rgba(255,255,255,${.45+r2*.5})`;g.beginPath();g.arc(x,y,s0*(.003+r2*.006),0,7);g.fill()}}
+ else if(kind==='funken'){g.globalCompositeOperation='lighter';for(let i=0;i<60;i++){const r1=fr(i*.618034),r2=fr(i*.381966+.1),cyc=Math.max(1,Math.round(dur*(.2+r2*.3))),u=fr(fr(i*.754877)+k*cyc),y=h-u*h*1.05,x=fr(r1+.03*Math.sin(k*Math.PI*2*Math.round(1+r2*4)+i))*w,a=Math.sin(u*Math.PI);g.fillStyle=`rgba(255,${130+Math.round(r2*90)},40,${a*.9})`;g.beginPath();g.arc(x,y,s0*(.002+r2*.004),0,7);g.fill()}}
+ else if(kind==='nebel'){for(let i=0;i<7;i++){const r1=fr(i*.618034+.2),r2=fr(i*.381966+.1),x=fr(r1+k*(i%2?1:-1))*(w*2)-w*.5,y=h*(.55+r2*.4),r=s0*(.5+r2*.4),gr=g.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,'rgba(225,232,240,.2)');gr.addColorStop(1,'rgba(225,232,240,0)');g.fillStyle=gr;g.fillRect(x-r,y-r,2*r,2*r)}}
+ g.restore()}
+function liveEnter(custom,fd){
+ if(!liveSaved)liveSaved={hide:[dome,ground,room,track,liftG].filter(o=>o&&o.visible),fn:scene.fog.near,ff:scene.fog.far,pr:renderer.getPixelRatio()};
+ liveSaved.hide.forEach(o=>{o.visible=!custom});catcher.visible=custom;if(custom){scene.fog.near=900;scene.fog.far=1000}else{scene.fog.near=liveSaved.fn+fd;scene.fog.far=liveSaved.ff+fd}}
+function liveStop(){
+ const was=!!rec||!!liveSaved;rec=null;Math.random=realRandom;TW.haz=1.4;TW.pulse=4;TW.rain=.08;
+ if(liveSaved){liveSaved.hide.forEach(o=>{o.visible=true});catcher.visible=false;scene.fog.near=liveSaved.fn;scene.fog.far=liveSaved.ff;renderer.setPixelRatio(liveSaved.pr);liveSaved=null}
+ if(was){A.nitro=0;if(bodyG)bodyG.rotation.z=0;applyMats();resize();shDirty=true;need=3}}
+async function liveSetup(maxL,preview){
+ const f=FMT[S.wpFmt]||FMT.iphone,k=Math.min(1,maxL/Math.max(f.w,f.h)),w=Math.round(f.w*k/2)*2,h=Math.round(f.h*k/2)*2;
  const ov=document.createElement('canvas');ov.width=w;ov.height=h;await drawOverlay(ov.getContext('2d'),w,h,true);
+ const cv=$('#liveCv');cv.width=w;cv.height=h;const g=cv.getContext('2d');g.imageSmoothingQuality='high';
+ const custom=S.wpBg!=='szene'&&!inside;let bg=null;if(custom){bg=document.createElement('canvas');bg.width=w;bg.height=h;drawBg(bg.getContext('2d'),w,h,S.wpBg)}
  const cam=camera.clone();cam.aspect=w/h;const base=inside?null:studioCam(cam,!!(S.wpText.trim()||S.wpSub.trim()),S.liveCam==='dreh');cam.updateProjectionMatrix();cam.updateMatrixWorld();
+ liveEnter(custom,inside?0:cam.position.length());renderer.setPixelRatio(1);renderer.setSize(w,h,false);
+ const dur=S.liveDur,N=Math.round(dur*30),q=v=>Math.max(1,Math.round(v*dur))/dur;
+ TW.haz=q(1.4);TW.pulse=2*Math.PI*q(4/(2*Math.PI));TW.rain=q(.08);
+ return{preview,i:0,N,dur,acc:0,cam,base,g,w,h,bg,ov,sm:0,done:false,again:false,finish:null,roll:2*Math.PI*q(({langsam:5,normal:13,schnell:26}[S.liveRollV]||13)/(2*Math.PI))}}
+function liveSim(R){
+ const N=R.N,i=R.i,k=i/N,ph=k*Math.PI*2,amp=S.liveAmp;if(i===0){seedRand(20261112);R.sm=0}
+ clock.elapsedTime=i*DT;const n=A.on?audioTick(DT):(A.nitro=Math.max(0,(A.nitro||0)-DT),0);fxTick(DT,n);
+ const by=bodyG?bodyG.position.y+car.position.y:0;
+ if(S.liveRoll)for(const o of allW)o.w.rotation.y-=o.s*DT*R.roll;
+ if(bodyG){if(S.liveBounce){const c=Math.max(1,Math.round(R.dur*1.1));bodyG.position.y+=.05*amp*Math.abs(Math.sin(ph*c/2));bodyG.rotation.z=.012*amp*Math.sin(ph*c)}else bodyG.rotation.z=0}
+ R.nwin=S.liveNitro&&((k>.12&&k<.4)||(k>.62&&k<.9));if(R.nwin)A.nitro=.12;
+ if(S.liveSmoke&&smokePos.length){R.sm+=DT*38;while(R.sm>1){R.sm--;const q=smokePos[Math.floor(Math.random()*smokePos.length)];spawn('smoke',q[0]+(Math.random()-.5)*.3,.06+liftY,q[1])}}
+ if(S.liveFlame&&pipePos.length&&Math.random()<.55){const q=pipePos[Math.floor(Math.random()*pipePos.length)];spawn('flame',q[0],q[1]+by,q[2])}
+ if(S.liveFlash){const c=Math.max(1,Math.round(R.dur/3)),u=fr(k*c),lit=u<.05||(u>.09&&u<.14)?1.7:(S.lights?1:0);M.drl.emissiveIntensity=.5+lit*4;M.head.emissiveIntensity=.01+lit*.1;M.flareH.opacity=S.flare&&lit?Math.min(1,.6*lit):0;if(spot)spot.intensity=lit*1.1}
+ if(R.base){const dr=R.base.dir.clone();let d=R.base.d;const lc=S.liveCam;
+  if(lc==='dreh')dr.applyAxisAngle(UPV,ph);else if(lc==='schwenk')dr.applyAxisAngle(UPV,Math.sin(ph)*.34*amp);else if(lc==='zoom')d*=1-Math.min(.5,.16*amp)*(.5-.5*Math.cos(ph));else if(lc==='hoch'){dr.y+=.22*amp*(.5-.5*Math.cos(ph));dr.normalize()}
+  R.base.place(dr,d);if(S.liveShake){R.cam.rotateY(.0035*(Math.sin(ph*7)+Math.sin(ph*13+1)));R.cam.rotateX(.0028*(Math.sin(ph*9+2)+Math.sin(ph*17)));R.cam.updateMatrixWorld()}}
+ R.k=k;R.fi=i}
+function liveDraw(R){
+ const g=R.g,w=R.w,h=R.h,k=R.k;renderer.shadowMap.needsUpdate=true;renderer.render(scene,R.cam);
+ if(R.bg){g.drawImage(R.bg,0,0);if(S.liveSpeed)liveLines(g,w,h,k,R.dur,1)}else g.clearRect(0,0,w,h);
+ g.drawImage(renderer.domElement,0,0,w,h);if(S.liveSpeed&&!R.bg)liveLines(g,w,h,k,R.dur,.55);
+ if(S.liveFx!=='keine')liveWeather(g,w,h,k,R.dur,S.liveFx);
+ if(R.nwin){const m=Math.max(w,h),v=g.createRadialGradient(w/2,h/2,m*.3,w/2,h/2,m*.72);v.addColorStop(0,'rgba(60,160,255,0)');v.addColorStop(1,`rgba(60,160,255,${.2+.13*Math.abs(Math.sin(R.fi*2.7))})`);g.fillStyle=v;g.fillRect(0,0,w,h)}
+ g.drawImage(R.ov,0,0)}
+function liveLoop(raw){
+ const R=rec;if(!R||R.done)return;R.acc+=Math.min(raw,.1);if(R.acc<DT-.003)return;R.acc=Math.min(R.acc-DT,DT);
+ if(R.again){R.again=false;liveDraw(R);return}
+ liveSim(R);liveDraw(R);R.i++;
+ if(R.preview){if(R.i>=R.N)R.i=0;return}
+ if(R.i%15===0)$('#shotMsg').textContent='Aufnahme läuft … noch '+Math.max(0,Math.ceil((R.N-R.i)/30))+' s. Bitte die App offen lassen.';
+ if(R.i>=R.N){R.done=true;R.finish()}}
+function liveWarm(R){for(let i=0;i<R.N;i++){R.i=i;liveSim(R)}R.i=0}
+async function livePrev(){
+ const my=++liveSeq;clearTimeout(shotTimer);liveStop();const R=await liveSetup(540,true);if(my!==liveSeq)return;
+ if(wtab!=='live'||$('#shot').hidden){liveStop();return}
+ liveWarm(R);rec=R;$('#shotMsg').textContent='Live-Vorschau: So läuft die Schleife, ohne Schnitt am Ende.'}
+function liveVis(){const live=wtab==='live';$('#shotImg').hidden=live;$('#shotVid').hidden=!(live&&liveShown);$('#liveCv').hidden=!live||liveShown;$('#shotSave').hidden=live;$('#liveBar').hidden=!live;$('#liveSave').hidden=!(liveShown&&liveBlob);$('#liveRec').textContent=liveShown?'Neu aufnehmen':'Aufnehmen'}
+function liveChange(){liveShown=false;try{$('#shotVid').pause()}catch(e){}liveVis();clearTimeout(liveT);liveT=setTimeout(()=>{if(wtab==='live'&&!$('#shot').hidden&&!(rec&&!rec.preview))livePrev()},140)}
+async function recordLive(){
+ if(rec&&!rec.preview)return;const msg=$('#shotMsg'),mime=recMime();
+ if(!mime){msg.textContent='Dieses Gerät kann in der App kein Video aufnehmen. Tipp: Starte eine Bildschirmaufnahme und filme die Live-Vorschau.';return}
+ const my=++liveSeq;clearTimeout(liveT);clearTimeout(shotTimer);liveStop();liveShown=false;try{$('#shotVid').pause()}catch(e){}liveVis();
+ const R=await liveSetup({klein:960,mittel:1280,gross:1920}[S.liveSize]||1280,false);if(my!==liveSeq)return;
+ liveWarm(R);liveSim(R);liveDraw(R);R.i=1;R.again=true;
  let mr,stream;const chunks=[];
- try{stream=cv.captureStream(30);mr=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:w*h*9})}catch(e){msg.textContent='Die Video-Aufnahme ließ sich nicht starten.';return}
+ try{stream=$('#liveCv').captureStream(30);mr=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:R.w*R.h*(S.liveQ==='hoch'?14:8)})}catch(e){liveStop();msg.textContent='Die Video-Aufnahme ließ sich nicht starten.';livePrev();return}
  mr.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};const stopped=new Promise(r=>{mr.onstop=r;mr.onerror=r});
- const hide=custom?[dome,ground,room,track,liftG].filter(o=>o&&o.visible):[],fn=scene.fog.near,ff=scene.fog.far,pr=renderer.getPixelRatio(),fd=inside?0:cam.position.length();
- $('#shot').classList.add('busy');
- try{hide.forEach(o=>{o.visible=false});catcher.visible=custom;if(custom){scene.fog.near=900;scene.fog.far=1000}else{scene.fog.near+=fd;scene.fog.far+=fd}
-  renderer.setPixelRatio(1);renderer.setSize(w,h,false);
-  const fin=new Promise(r=>{rec={t:0,dur:S.liveDur,cam,base,g,w,h,bg,ov,sm:0,n:0,sec:-1,done:false,finish:r}});
-  mr.start(250);await fin;mr.stop();await stopped}
- finally{rec=null;A.nitro=0;hide.forEach(o=>{o.visible=true});catcher.visible=false;scene.fog.near=fn;scene.fog.far=ff;renderer.setPixelRatio(pr);resize();shDirty=true;need=3;try{stream.getTracks().forEach(t=>t.stop())}catch(e){}$('#shot').classList.remove('busy')}
- if(!chunks.length){msg.textContent='Die Aufnahme ist leer geblieben. Versuch es mit einer kleineren Größe noch einmal.';return}
- liveBlob=new Blob(chunks,{type:mime.split(';')[0]});if(liveUrl)URL.revokeObjectURL(liveUrl);liveUrl=URL.createObjectURL(liveBlob);
+ $('#shot').classList.add('busy');$('#liveRec').disabled=true;msg.textContent='Aufnahme läuft … noch '+S.liveDur+' s. Bitte die App offen lassen.';
+ try{const fin=new Promise(r=>{R.finish=r});mr.start(250);rec=R;await fin;await new Promise(r=>setTimeout(r,45));mr.stop();await stopped}
+ finally{liveStop();try{stream.getTracks().forEach(t=>t.stop())}catch(e){}$('#shot').classList.remove('busy');$('#liveRec').disabled=false}
+ if(!chunks.length){msg.textContent='Die Aufnahme ist leer geblieben. Versuch es mit einer kleineren Größe noch einmal.';livePrev();return}
+ liveBlob=new Blob(chunks,{type:mime.split(';')[0]});if(liveUrl)URL.revokeObjectURL(liveUrl);liveUrl=URL.createObjectURL(liveBlob);liveShown=true;
  const v=$('#shotVid');v.src=liveUrl;studio();try{v.play().catch(()=>{})}catch(e){}
- msg.textContent=`Fertig: ${w} × ${h} Pixel, ${S.liveDur} s, ${(liveBlob.size/1048576).toFixed(1).replace('.',',')} MB (${liveBlob.type.includes('mp4')?'MP4':'WebM'}). Jetzt „Video speichern“.`;
+ msg.textContent=`Fertig: ${R.w} × ${R.h} Pixel, ${S.liveDur} s, ${(liveBlob.size/1048576).toFixed(1).replace('.',',')} MB (${liveBlob.type.includes('mp4')?'MP4':'WebM'}). Oben läuft dein Video in Schleife.`;
 }
 async function saveLive(){
  const msg=$('#shotMsg');if(!liveBlob)return;const name='larsens-live-'+S.wpFmt+'.'+(liveBlob.type.includes('mp4')?'mp4':'webm');
@@ -1204,6 +1251,7 @@ function sharpen(g,w,h,a){if(a<=0)return;const im=g.getImageData(0,0,w,h),d=im.d
  g.putImageData(im,0,0)}
 function speedLines(g,w,h,a){let sd=11;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;g.save();for(let i=0;i<70;i++){const y=rnd()*h,len=w*(.2+rnd()*.6),x=rnd()*w-len/2,t=Math.max(1,h*(.0012+rnd()*.003)),gr=g.createLinearGradient(x,0,x+len,0);gr.addColorStop(0,'rgba(255,255,255,0)');gr.addColorStop(.5,`rgba(255,255,255,${a*(.25+rnd()*.5)})`);gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.fillRect(x,y,len,t)}g.restore()}
 async function makeShot(full){
+ if(rec)return false;
  const my=++shotSeq;full=full===true;
  try{
  const f=FMT[S.wpFmt]||FMT.iphone,cap=Math.min(renderer.capabilities.maxTextureSize||4096,4096),k=Math.min(1,cap/Math.max(f.w,f.h)),pv=full?1:Math.min(1,960/(Math.max(f.w,f.h)*k)),w=Math.round(f.w*k*pv),h=Math.round(f.h*k*pv);
@@ -1229,7 +1277,7 @@ async function makeShot(full){
 /* Fotostudio-Bedienung */
 const wbody=$('#wbody'),WT=[['format','Format'],['bg','Kulisse'],['cam','Kamera'],['text','Text'],['fx','Effekte'],['live','Live']];let wtab='format';
 function txtIn(key,ph,max){const i=el('input',{class:'txt',id:'w_'+key,maxlength:String(max),placeholder:ph,value:S[key],'aria-label':ph});i.addEventListener('input',()=>{S[key]=i.value;save();queueShot()});return i}
-function studio(){host=wbody;wbody.textContent='';{const lv=wtab==='live'&&!!liveUrl;$('#shotVid').hidden=!lv;$('#shotImg').hidden=lv;$('#shotSave').hidden=wtab==='live'}const q=queueShot,pc=v=>Math.round(v*100)+' %';[...$('#wtabs').children].forEach(b=>b.setAttribute('aria-selected',String(b.dataset.t===wtab)));
+function studio(){host=wbody;wbody.textContent='';liveVis();if(wtab!=='live'){if(rec)liveStop();try{$('#shotVid').pause()}catch(e){}if(liveOpen){liveOpen=false;$('#shotMsg').textContent='Bild wird erstellt …';queueShot()}}else{liveOpen=true;if(!liveShown&&!rec)livePrev()}const q=queueShot,pc=v=>Math.round(v*100)+' %';[...$('#wtabs').children].forEach(b=>b.setAttribute('aria-selected',String(b.dataset.t===wtab)));
  if(wtab==='format'){grp('Format',chips('wpFmt',Object.entries(FMT).map(([k,v])=>[k,v.n]),q));grp('Rahmen',chips('wpFrame',[['none','Ohne'],['kino','Kino-Balken'],['weiss','Weißer Rand'],['linie','Feine Linie']],q));
   grp('Am Auto',el('div',{class:'chips'},toggle('lights','Licht an',()=>{applyMats();$('#bLight').setAttribute('aria-pressed',S.lights);q()}),toggle('glow','Unterbodenlicht',()=>{applyMats();q()})))}
  else if(wtab==='bg'){grp('Kulisse',chips('wpBg',[['szene','3D-Umgebung'],['verlauf','Farbverlauf'],['abend','Sonnenuntergang'],['skyline','Skyline bei Nacht'],['neon','Neon-Raster'],['sterne','Sternenhimmel'],['carbon','Carbon'],['streifen','Rennstreifen'],['hell','Hell'],['farbe','Eigene Farbe']],q));
@@ -1242,21 +1290,28 @@ function studio(){host=wbody;wbody.textContent='';{const lv=wtab==='live'&&!!liv
  else if(wtab==='text'){grp('Dein Text',txtIn('wpText','Titel, z. B. Mein Traumwagen',60),txtIn('wpSub','Zweite Zeile, z. B. 620 PS',60));
   grp('Position',chips('wpPos',[['top','Oben'],['mid','Mitte'],['bottom','Unten']],q));
   grp('Schrift',chips('wpFont',[['sport','Sportlich'],['block','Block'],['klar','Schlicht']],q),el('div',{class:'chips'},toggle('wpOutline','Kontur',q),toggle('wpBadge','Werkstatt-Logo',q)),swatch('wpCol',['#ffffff','#0c0d10','#ffb020','#ff3b30','#7cd4ff','#b6e600'],q),slider('wpSize','Größe',.5,2,.05,pc,q))}
- else if(wtab==='live'){const nop=()=>{};
-  grp('Live-Hintergrund',el('p',{class:'note',text:'Nimmt ein kurzes Video von deinem Auto auf, das sich nahtlos wiederholen lässt. Format, Kulisse, Blickwinkel und Text kommen aus den anderen Bereichen. Filter, Schärfe und Filmkorn gelten nur für Fotos.'}),
-   el('button',{class:'hb go',id:'liveRec',style:'min-height:50px;font-size:17px',text:liveBlob?'Neu aufnehmen':'Live-Hintergrund aufnehmen',onclick:recordLive}),liveBlob?el('button',{class:'wide',id:'liveSave',text:'Video speichern',onclick:saveLive}):null);
-  grp('Bewegung',el('div',{class:'chips'},toggle('liveRoll','Räder drehen',nop),toggle('liveNitro','Nitro-Stöße',nop),toggle('liveSmoke','Reifenqualm',nop),toggle('liveFlame','Auspuffflammen',nop),toggle('liveSpeed','Speed-Linien',nop)));
-  grp('Kamerafahrt',chips('liveCam',[['fest','Fest'],['schwenk','Schwenk'],['dreh','Rundfahrt'],['zoom','Heranfahren'],['hoch','Aufsteigen']],nop));
-  grp('Licht',el('div',{class:'chips'},toggle('lights','Licht an',()=>{applyMats();$('#bLight').setAttribute('aria-pressed',S.lights)}),toggle('glow','Unterbodenlicht',applyMats),toggle('glowPulse','Pulsieren',nop),toggle('hazard','Warnblinker',nop)));
-  grp('Dauer und Größe',chips('liveDur',[[4,'4 s'],[6,'6 s'],[8,'8 s'],[12,'12 s']],nop),chips('liveSize',[['klein','Klein (schnell)'],['mittel','Mittel'],['gross','Groß (Full HD)']],nop));
-  grp('So wird daraus ein Live-Hintergrund',el('p',{class:'note',html:'<b style="color:var(--fg)">iPhone:</b> Video speichern, mit einer App wie intoLive in ein Live Photo umwandeln und es in den Einstellungen als Sperrbildschirm wählen.<br><b style="color:var(--fg)">Android:</b> Video in der Galerie öffnen und „Als Hintergrund festlegen“ wählen (z. B. Samsung), sonst mit einer Video-Hintergrund-App.<br><b style="color:var(--fg)">PC:</b> Mit einem Programm wie Lively Wallpaper oder Wallpaper Engine als Hintergrund einstellen.'}),el('p',{class:'note',text:'Nitro und Flammen gibt es nur bei Autos mit Auspuff, also nicht beim Elektromotor.'}))}
+ else if(wtab==='live'){const lv=liveChange,lm=()=>{applyMats();liveChange()},
+   OFF={liveRoll:false,liveNitro:false,liveSmoke:false,liveFlame:false,liveSpeed:false,liveBounce:false,liveShake:false,liveFlash:false,liveFx:'keine',liveCam:'fest',liveRollV:'normal',liveAmp:1},
+   PRE=[['Showroom',{liveCam:'dreh'}],['Vollgas',{liveRoll:true,liveRollV:'schnell',liveSpeed:true,liveShake:true,liveCam:'schwenk'}],['Nitro-Start',{liveRoll:true,liveNitro:true,liveFlame:true,liveSpeed:true,liveCam:'zoom'}],['Burnout',{liveRoll:true,liveRollV:'schnell',liveSmoke:true,liveFlame:true,liveCam:'schwenk'}],['Regennacht',{liveRoll:true,liveFx:'regen',liveFlash:true,liveCam:'schwenk'}],['Winter',{liveFx:'schnee',liveCam:'hoch'}],['Lowrider',{liveBounce:true,liveCam:'schwenk',liveAmp:1.3}],['Funkenflug',{liveFx:'funken',liveFlame:true,liveCam:'zoom'}]];
+  if(liveShown)grp('Deine Aufnahme',el('p',{class:'note',text:'Oben läuft das fertige Video in Schleife. Gefällt es dir, tippe unten auf „Video speichern“.'}),el('button',{class:'wide',text:'Zurück zur Live-Vorschau',onclick:()=>{liveChange();studio()}}));
+  const pre=el('div',{class:'chips'});for(const[n,o]of PRE)pre.append(el('button',{class:'chip',text:n,onclick:()=>{Object.assign(S,OFF,o);save();liveShown=false;studio();liveChange()}}));
+  grp('Vorlagen',pre,el('p',{class:'note',text:'Ein Tipp stellt alles passend ein. Die Vorschau oben zeigt sofort, wie es aussieht. Danach kannst du jede Option einzeln ändern.'}));
+  grp('Räder',el('div',{class:'chips'},toggle('liveRoll','Räder drehen',lv)),chips('liveRollV',[['langsam','Langsam'],['normal','Normal'],['schnell','Schnell']],lv));
+  grp('Effekte am Auto',el('div',{class:'chips'},toggle('liveNitro','Nitro-Stöße',lv),toggle('liveFlame','Auspuffflammen',lv),toggle('liveSmoke','Reifenqualm',lv),toggle('liveBounce','Federn (Hydraulik)',lv)));
+  grp('Kamerafahrt',chips('liveCam',[['fest','Fest'],['schwenk','Schwenk'],['dreh','Rundfahrt'],['zoom','Heranfahren'],['hoch','Aufsteigen']],lv),slider('liveAmp','Stärke der Bewegung',.3,2,.1,pc,lv),el('div',{class:'chips'},toggle('liveShake','Kamerawackeln',lv)));
+  grp('Licht',el('div',{class:'chips'},toggle('lights','Licht an',()=>{$('#bLight').setAttribute('aria-pressed',S.lights);lm()}),toggle('liveFlash','Lichthupe',lm),toggle('hazard','Warnblinker',lv),toggle('glow','Unterbodenlicht',lm),toggle('glowPulse','Unterbodenlicht pulsiert',lv),toggle('rainbow','Farbwechsel-Lack',lm)));
+  grp('Wetter und Luft',chips('liveFx',[['keine','Nichts'],['regen','Regen'],['schnee','Schnee'],['funken','Funkenflug'],['nebel','Nebel']],lv),el('div',{class:'chips'},toggle('liveSpeed','Speed-Linien',lv)));
+  grp('Dauer der Schleife',chips('liveDur',[[4,'4 s'],[6,'6 s'],[8,'8 s'],[12,'12 s']],lv));
+  grp('Größe und Qualität',chips('liveSize',[['klein','Klein (schnell)'],['mittel','Mittel'],['gross','Groß (Full HD)']],()=>{}),chips('liveQ',[['normal','Normal'],['hoch','Hohe Qualität (größere Datei)']],()=>{}));
+  grp('So wird daraus ein Live-Hintergrund',el('p',{class:'note',html:'<b style="color:var(--fg)">iPhone:</b> Video speichern, mit einer App wie intoLive in ein Live Photo umwandeln und es in den Einstellungen als Sperrbildschirm wählen.<br><b style="color:var(--fg)">Android:</b> Video in der Galerie öffnen und „Als Hintergrund festlegen“ wählen (z. B. Samsung), sonst mit einer Video-Hintergrund-App.<br><b style="color:var(--fg)">PC:</b> Mit einem Programm wie Lively Wallpaper oder Wallpaper Engine als Hintergrund einstellen. Dort „Schleife“ einschalten.'}),el('p',{class:'note',text:'Format, Kulisse, Blickwinkel und Text stellst du in den anderen Bereichen ein. Filter, Schärfe und Filmkorn gelten nur für Fotos. Nitro und Flammen gibt es nur bei Autos mit Auspuff.'}))}
  else{grp('Filter',chips('wpFilter',[['none','Ohne'],['kino','Kino'],['kraeftig','Kräftig'],['sw','Schwarzweiß'],['vintage','Vintage'],['nacht','Nacht']],q));
   grp('Stärke',slider('wpSharp','Schärfe',0,1,.05,pc,q),slider('wpVig','Dunkle Ecken',0,.8,.05,pc,q),slider('wpGlow','Leuchten',0,1,.05,pc,q),slider('wpGrain','Filmkorn',0,1,.05,pc,q));
   grp('Tempo',el('div',{class:'chips'},toggle('wpSpeed','Speed-Linien',q)))}
  host=pane}
 WT.forEach(([k,l])=>$('#wtabs').append(el('button',{role:'tab','data-t':k,text:l,onclick:()=>{wtab=k;studio();wbody.scrollTop=0}})));
 $('#bShot').onclick=()=>{$('#shot').hidden=false;$('#shotMsg').textContent='Bild wird erstellt …';studio();queueShot()};
-$('#shotClose').onclick=()=>{if(rec)return;$('#shot').hidden=true;try{$('#shotVid').pause()}catch(e){}show()};
+$('#liveRec').onclick=recordLive;$('#liveSave').onclick=saveLive;
+$('#shotClose').onclick=()=>{if(rec&&!rec.preview)return;liveStop();liveOpen=false;clearTimeout(liveT);$('#shot').hidden=true;try{$('#shotVid').pause()}catch(e){}show()};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#shot').hidden=true});
 $('#shotSave').onclick=async()=>{
  const msg=$('#shotMsg'),btn=$('#shotSave'),hint='Falls nichts passiert: Halte das Bild oben gedrückt (Handy) oder klicke mit rechts darauf (PC) und wähle „Bild sichern“.';
@@ -1305,8 +1360,8 @@ function fxTick(dt,n){
  if(!inside){const want=35+(nit?8*Math.sin(Math.PI*Math.min(1,(1.6-A.nitro)/1.6)):0);if(Math.abs(camera.fov-want)>.01){camera.fov=want;camera.updateProjectionMatrix()}}
  for(const o of spinW)o.w.rotation.y-=o.s*(A.on&&(A.thr||nit)?(12+n*70):0)*dt;
  if(camA&&!inside){camA.t=Math.min(1,camA.t+dt/1.2);const e=camA.t<.5?2*camA.t*camA.t:1-Math.pow(-2*camA.t+2,2)/2,v=camA.from.clone().lerp(camA.to,e);if(v.lengthSq()<.01)v.set(.1,1,.1);v.setLength(camA.from.length()+(camA.to.length()-camA.from.length())*e);camera.position.copy(controls.target).add(v);if(camA.t>=1)camA=null}
- {const on=S.hazard&&(clock.elapsedTime*1.4)%1<.5;if(on!==(M.flareO.opacity>0)){M.flareO.opacity=on?.6:0;M.ind.emissiveIntensity=on?7:0;need=Math.max(need,2);if(S.hazard&&A.ctx&&S.sfx)burst('highpass',on?3200:2400,.05,.02)}}
- if(S.rainbow&&bodyMat&&!bodyMat.map)bodyMat.color.setHSL((clock.elapsedTime*.08)%1,.85,.45).convertSRGBToLinear();
+ {const on=S.hazard&&(clock.elapsedTime*TW.haz)%1<.5;if(on!==(M.flareO.opacity>0)){M.flareO.opacity=on?.6:0;M.ind.emissiveIntensity=on?7:0;need=Math.max(need,2);if(S.hazard&&A.ctx&&S.sfx)burst('highpass',on?3200:2400,.05,.02)}}
+ if(S.rainbow&&bodyMat&&!bodyMat.map)bodyMat.color.setHSL((clock.elapsedTime*TW.rain)%1,.85,.45).convertSRGBToLinear();
  dropT+=dt;hopT+=dt;
  const lt=S.lift&&(SCENES[S.scene]||{}).room?1.55:0,l0=liftY;liftY+=clamp(lt-liftY,-dt*.55,dt*.55);const dl=liftY-l0;
  car.position.y=(dropT<1.4?.45*Math.exp(-4.5*dropT)*Math.abs(Math.cos(dropT*8)):0)+liftY;
@@ -1314,7 +1369,7 @@ function fxTick(dt,n){
  if(liftG){liftG.visible=liftY>.005||lt>0;liftArms.position.y=T.gc-.07+liftY}
  if(inside){camera.position.y+=dl;controls.target.y+=dl}else{controls.target.y=P.top(.55)*.5+liftY;controls.maxPolarAngle=Math.PI/2-.04+Math.min(.5,liftY*.5)}
  if(bodyG)bodyG.position.y=S.ride/1000+(hopT<1.6?.16*Math.exp(-3.2*hopT)*Math.abs(Math.sin(hopT*9)):0)+(dropT<1.4?-.03*Math.exp(-5*dropT)*Math.sin(dropT*16):0);
- if(glowLight&&S.glow){const k=S.glowPulse?.55+.45*Math.sin(clock.elapsedTime*4):1;glowLight.intensity=7*k;M.glow.opacity=k}
+ if(glowLight&&S.glow){const k=S.glowPulse?.55+.45*Math.sin(clock.elapsedTime*TW.pulse):1;glowLight.intensity=7*k;M.glow.opacity=k}
  if(S.show&&!inside){const ty=controls.target.y+1.1+Math.sin(clock.elapsedTime*.35)*.9;camera.position.y+=(ty-camera.position.y)*Math.min(1,dt*.8)}
 }
 
@@ -1323,12 +1378,12 @@ const clock=new THREE.Clock();
 canvas.addEventListener('webglcontextlost',e=>{e.preventDefault()});
 canvas.addEventListener('webglcontextrestored',()=>{envTex=null;applyScene();applyMats();shDirty=true;need=5});
 function frame(){
- const raw=clock.getDelta(),dt=Math.min(.05,raw),n=audioTick(dt);
+ const raw=clock.getDelta();if(rec){liveLoop(raw);return}
+ const dt=Math.min(.05,raw),n=audioTick(dt);
  {const gk=A.on?Math.round(A.rpm/25)+(A.thr?1e6:0):-2;if(gk!==gaugeLast&&(inside||gaugeLast<0)){gaugeLast=gk;drawGauge();need=Math.max(need,1)}}
  if(bodyG){const ev=S.engine==='ev';bodyG.rotation.x=A.on&&!ev&&S.shake?Math.sin(clock.elapsedTime*(28+n*60))*.0016*(1+n*1.5):0}
  fxTick(dt,n);controls.update();if(camera.position.y<.2)camera.position.y=.2;
  const moving=dropT<1.5||hopT<1.7||liftMove,active=(S.spin&&!inside)||S.show||A.on||A.rpm>1||moving||camA||fxAlive||S.hazard||S.rainbow||(S.glow&&S.glowPulse);
- if(rec){recFrame(dt);return}
  if(!active&&need<=0)return;
  if(shDirty||moving||A.on){renderer.shadowMap.needsUpdate=true;shDirty=false}
  renderer.render(scene,camera);if(need>0)need--;adapt(raw);
