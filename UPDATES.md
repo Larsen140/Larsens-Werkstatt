@@ -2,6 +2,12 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 4.7 – 12. November 2026
+
+- iPhone: Motor, Hupe und alle anderen Geräusche spielen jetzt auch bei eingeschaltetem Stummschalter
+- Die App behandelt ihren Ton dafür wie Musik: Die Lautstärke regelst du mit den Lautstärketasten
+- Wechselst du aus der App, wird der Ton pausiert
+
 ## Version 4.6 – 12. November 2026
 
 **Schärfere Bilder in allen Formaten**
