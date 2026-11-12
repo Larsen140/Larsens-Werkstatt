@@ -2,6 +2,21 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 4.9 – 12. November 2026
+
+**Live-Hintergründe** (Fotostudio → „Live“)
+- Nimmt ein kurzes Video deines Autos auf, das sich nahtlos wiederholen lässt
+- Bewegung: Räder drehen, Nitro-Stöße, Reifenqualm, Auspuffflammen, Speed-Linien
+- Kamerafahrt: fest, Schwenk, Rundfahrt, Heranfahren, Aufsteigen
+- Licht: Scheinwerfer, Unterbodenlicht, Pulsieren, Warnblinker
+- Dauer 4, 6, 8 oder 12 Sekunden; Größe klein, mittel oder Full HD
+- Funktioniert in jedem Format (iPhone, Android, Tablet, PC, Story, Banner) und mit jeder Kulisse; Text, Rahmen und Logo werden übernommen
+- Speichern als Video über „Video speichern“
+- In der App steht, wie daraus auf iPhone, Android und PC ein Live-Hintergrund wird
+
+**Sonst**
+- Die Hinterräder drehen beim Gasgeben jetzt beide in dieselbe Richtung
+
 ## Version 4.8 – 12. November 2026
 
 - Gedrückt halten markiert keinen Text mehr und öffnet kein Kopieren-Menü

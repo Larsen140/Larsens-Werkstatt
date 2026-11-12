@@ -46,6 +46,7 @@ Danach startet sie vom Homescreen im Vollbild und läuft auch ohne Internet. Am 
 - **Innenraum:** Sitze, Bezüge, Farben, Ambientelicht, Blick vom Fahrersitz
 - **Umgebungen:** Werkstatt mit Hebebühne, Rennstrecke, Studios, Abendsonne, Neon-Nacht
 - **Fotostudio:** Hintergrundbild, Profilbild, Banner und Story mit 10 Kulissen, Kamera-Reglern, Filtern, Effekten, Rahmen und eigenem Text
+- **Live-Hintergründe:** kurze Videos mit drehenden Rädern, Nitro, Qualm, Flammen und Kamerafahrten für Handy, Tablet und PC
 - **Garage:** bis zu 12 eigene Autos speichern und wieder laden
 
 ## Dateien
