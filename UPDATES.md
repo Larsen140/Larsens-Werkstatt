@@ -2,6 +2,12 @@
 
 Alle Änderungen an Larsens Autowerkstatt, die neueste Version zuerst.
 
+## Version 4.8 – 12. November 2026
+
+- Gedrückt halten markiert keinen Text mehr und öffnet kein Kopieren-Menü
+- In Textfeldern (Kennzeichen, Bildtext, Garagen-Name) lässt sich weiter markieren und einfügen
+- Auf dem Vorschaubild im Fotostudio bleibt „Bild sichern“ per Gedrückthalten möglich
+
 ## Version 4.7 – 12. November 2026
 
 - iPhone: Motor, Hupe und alle anderen Geräusche spielen jetzt auch bei eingeschaltetem Stummschalter

@@ -15,7 +15,9 @@ body{background:var(--bg);color:var(--fg);font:400 14px/1.45 var(--body);overflo
 *{box-sizing:border-box}
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer;touch-action:manipulation;-webkit-touch-callout:none}
-body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea{-webkit-user-select:text;user-select:text}
+#shotImg{-webkit-touch-callout:default}
 #boot{position:fixed;inset:0;z-index:30;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;transition:opacity .45s}
 #boot.out{opacity:0;pointer-events:none}
 #boot b{font:800 30px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
@@ -212,7 +214,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 const $=s=>document.querySelector(s);
 const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[n,v]of Object.entries(a)){if(n==='class')e.className=v;else if(n==='text')e.textContent=v;else if(n==='html')e.innerHTML=v;else if(n.startsWith('on'))e.addEventListener(n.slice(2),v);else e.setAttribute(n,v)}k.forEach(c=>c&&e.append(c));return e};
 /* Homescreen-Pflicht: nur in der GitHub-Version (dort gibt es ein Manifest), nur auf Handy und Tablet */
-const VERSION='4.7';
+const VERSION='4.8';
 {const bv=document.getElementById('bootV');if(bv)bv.textContent='Version '+VERSION}
 (function(){const de=document.documentElement;if(!de.classList.contains('pwa'))return;
  const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),alone=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
@@ -237,6 +239,8 @@ let gated=false;
  window.addEventListener('appinstalled',()=>{$('#instH').textContent='Installiert';$('#instP').textContent='Öffne die Werkstatt jetzt von deinem Homescreen.';ol.hidden=true;btn.hidden=true});
  try{matchMedia('(display-mode: standalone)').addEventListener('change',e=>{if(e.matches)location.reload()})}catch(e){}
 })();
+document.addEventListener('contextmenu',e=>{const t=e.target;if(!(t&&t.closest&&t.closest('input,textarea,#shotImg')))e.preventDefault()});
+document.addEventListener('selectstart',e=>{const t=e.target;if(!(t&&t.closest&&t.closest('input,textarea')))e.preventDefault()});
 const col=h=>new THREE.Color(h).convertSRGBToLinear();
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
@@ -360,6 +364,7 @@ const SCENES={
 const FMT={pfp:{n:'Profilbild',w:2048,h:2048},banner:{n:'Banner',w:3000,h:1000},story:{n:'Story',w:1080,h:1920},iphone:{n:'iPhone',w:1290,h:2796},handy:{n:'Android-Handy',w:1440,h:3200},ipad:{n:'iPad / Tablet',w:2048,h:2732},pc:{n:'PC Full HD',w:1920,h:1080},wqhd:{n:'PC WQHD',w:2560,h:1440},pc4k:{n:'PC 4K',w:3840,h:2160}};
 
 const UPDATES=[
+ ['Version 4.8','Gedrückt halten markiert keinen Text mehr und öffnet kein Kopieren-Menü. Nur in Textfeldern und auf dem Vorschaubild im Fotostudio funktioniert es weiter.'],
  ['Version 4.7','iPhone: Der Ton spielt jetzt auch, wenn der Stummschalter an der Seite an ist. Die Lautstärke regelst du wie bei Musik mit den Lautstärketasten.'],
  ['Version 4.6','Schärfere Bilder: Beim Speichern wird das Auto größer berechnet und sauber verkleinert, dazu ein Schärfe-Regler, feinere Schatten, weniger Kompression und schärfere Texturen. Profilbild jetzt 2048 × 2048, Banner 3000 × 1000, neues Format PC WQHD.'],
  ['Version 4.5','Unterbodenbeleuchtung neu: Leuchtröhren unter dem Auto, größerer und hellerer Lichtschein am Boden. Der schwarze Balken in gespeicherten Bildern mit Unterbodenlicht ist weg.'],
